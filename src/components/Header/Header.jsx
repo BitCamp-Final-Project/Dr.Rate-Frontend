@@ -125,7 +125,7 @@ const Header = () => {
                     <li className={styles.userMenuItem}>
                         <img src={verticalDividerIcon} alt="세로 구분선" className={styles.verticalDivider} />
                     </li>
-                    <li className={styles.userMenuItem}>
+                    <li className={styles.userMenuItem} onClick={() => navigate(PATH.SERVICE_CENTER)}>
                         고객센터
                     </li>
                 </ul>
