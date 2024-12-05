@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import styles from "./ServiceCenterPage.module.scss";
+import {  useNavigate } from 'react-router-dom';
+import { PATH } from "src/utils/path";
 
 const categories = [
   { id: "all", name: "전체" },
@@ -44,6 +46,8 @@ const ServiceCenterPage = () => {
   const [activeCategory, setActiveCategory] = useState("all");
   const [expandedQuestionId, setExpandedQuestionId] = useState(null);
 
+  const navigate = useNavigate();
+
   const handleQuestionClick = (id) => {
     setExpandedQuestionId(expandedQuestionId === id ? null : id);
   };
@@ -83,7 +87,7 @@ const ServiceCenterPage = () => {
               <li>・일요일: 휴무</li>
               <br></br>
             </ul>
-            <button className={styles.chatButton}>관리자 1:1 문의하기</button>
+            <button className={styles.chatButton} onClick={()=>navigate(PATH.USER_INQUIRE)}>관리자 1:1 문의하기</button>
             <div className={styles.emailActions}>
               <button className={styles.emailButton}>이메일 문의하기</button>
               <button className={styles.copyButton}>이메일 주소 복사하기</button>
