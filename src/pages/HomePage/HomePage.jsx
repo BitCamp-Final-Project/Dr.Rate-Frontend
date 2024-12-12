@@ -16,7 +16,6 @@ const HomePage = () => {
     const [phoneFramePartialVisible, setPhoneFramePartialVisible] = useState(false);
     const [phoneFrameFullVisible, setPhoneFrameFullVisible] = useState(false);
 
-
     useEffect(() => {
         // body에 클래스 추가
         document.body.classList.add(styles.homeBody);
