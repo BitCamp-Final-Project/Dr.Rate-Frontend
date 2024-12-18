@@ -23,6 +23,7 @@ const addFavorite = async (prdId) => {
   const response = await axios.post(`${PATH.SERVER}/api/favorite/addFavorite`, 
     { prdId },
     { headers : { 'Authorization' : `Bearer ${getSessionToken()}`}}
+    
   );
   return response.data;
 };
