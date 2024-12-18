@@ -1,7 +1,8 @@
 /* src/apis/productsAPI.js */
 
-import axios from 'axios';
 import { PATH } from "src/utils/path";
+import axios from "axios";
+
 
 
 /**

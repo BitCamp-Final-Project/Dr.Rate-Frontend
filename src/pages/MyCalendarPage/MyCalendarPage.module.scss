@@ -2,7 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
 
 // 공통 스타일
-body {
+* {
   font-family: 'Noto Sans KR', sans-serif;
 }
 
@@ -135,6 +135,43 @@ body {
   &:hover {
     background-color: #006bbd;  /* 버튼 호버 색상 */
   }
+}
+
+.buttonContainer {
+  display: flex; /* 버튼을 가로로 나열 */
+  gap: 8px; /* 버튼 사이 여백 */
+  width: 100%;
+
+  .updateButton,
+  .deleteButton {
+    flex: 1; /* 두 버튼의 너비를 동일하게 설정 */
+    padding: 10px;
+    background-color: var(--main2); /* 기본 버튼 색상 */
+    color: var(--white); /* 글자 색상 */
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    text-align: center;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: #006bbd; /* 호버 색상 */
+    }
+  }
+
+  .deleteButton {
+    background-color: var(--red1); /* 삭제 버튼 - 빨간색 */
+    &:hover {
+      background-color: var(--red2); /* 삭제 버튼 호버 색상 */
+    }
+  }
+}
+
+.logoImage {
+  width: 50px; // 너비
+  height: 50px; // 높이
+  object-fit: contain; // 비율을 유지하면서 이미지 크기를 맞춤
 }
 
 /* 달력 흐리게 처리 */

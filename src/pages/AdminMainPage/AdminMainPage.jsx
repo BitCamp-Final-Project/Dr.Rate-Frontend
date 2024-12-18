@@ -8,6 +8,13 @@ import userLogo from 'src/assets/icons/userIcon.png'
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 const AdminMainPage = () => {
+    // 방문자 현황 체크
+    const [visitorSummary, setVisitorSummary] = useState({
+        today: { visitorCount: 0, newMembersCount: 0, inquiriesCount: 0 },
+        last4Days: [],
+        last7DaysTotal: 0,
+        thisMonthTotal: 0
+    });
     const [newUsers, setNewUsers] = useState([]);  // 신규 회원 데이터를 저장
     const [inquireList, setInquireList] = useState([]);  // 신규 회원 데이터를 저장
     const token = localStorage.getItem("authToken");
@@ -53,35 +60,70 @@ const AdminMainPage = () => {
         }
     }
 
+    const fetchVisitorSummary = async () => {
+        try {
+            const response = await fetch(`${PATH.SERVER}/api/visitor-summary`, {
+                method: "GET",
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            const data = await response.json();
+
+            if (data.success) {
+                setVisitorSummary(data.result); // 상태에 데이터 저장
+            } else {
+                console.error("방문자 요약 조회 실패:", data.message);
+            }
+        } catch (error) {
+            console.error("API 호출 중 오류:", error);
+        }
+    };
+
     // 컴포넌트가 마운트될 때 데이터 가져오기
     useEffect(() => {
         fetchNewUsers();
         fetchInquiryList();
+        fetchVisitorSummary();
     }, []);
 
 
     const data = {
-        labels: ['12-05', '12-06', '12-07', '12-08', '12-09', '12-10', '12-11'], // 날짜 라벨
+        labels: ['오늘', '최근 7일', '이번 달'], // X축 라벨
         datasets: [
             {
                 label: '총 방문자 수',
-                data: [2, 5, 3, 10, 4, 3, 0], // 총 방문자 수 데이터
+                data: [
+                    visitorSummary.today.visitorCount,   // 오늘 방문자 수
+                    visitorSummary.last7DaysTotal.visitorCount, // 최근 7일 방문자 수
+                    visitorSummary.thisMonthTotal.visitorCount  // 이번 달 방문자 수
+                ],
                 borderColor: 'rgba(255, 99, 132, 1)',
                 backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                fill: true, // 영역 채우기
-                tension: 0.4, // 부드러운 곡선
-                pointBackgroundColor: 'rgba(255, 99, 132, 1)',
-                borderWidth: 1,
+                fill: true,
+                tension: 0.4,
             },
             {
-                label: '방문자 수',
-                data: [1, 2, 4, 6, 2, 3, 0], // 금일 방문자 수 데이터
+                label: '신규 가입자 수',
+                data: [
+                    visitorSummary.today.newMembersCount,  // 오늘 신규 가입자 수
+                    visitorSummary.last7DaysTotal.newMembersCount, // 최근 7일 신규 가입자 수
+                    visitorSummary.thisMonthTotal.newMembersCount  // 이번 달 신규 가입자 수
+                ],
                 borderColor: 'rgba(54, 162, 235, 1)',
                 backgroundColor: 'rgba(54, 162, 235, 0.2)',
                 fill: true,
                 tension: 0.4,
-                pointBackgroundColor: 'rgba(54, 162, 235, 1)',
-                borderWidth: 1,
+            },
+            {
+                label: '문의 수',
+                data: [
+                    visitorSummary.today.inquiriesCount,  // 오늘 문의 수
+                    visitorSummary.last7DaysTotal.inquiriesCount, // 최근 7일 문의 수
+                    visitorSummary.thisMonthTotal.inquiriesCount  // 이번 달 문의 수
+                ],
+                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                fill: true,
+                tension: 0.4,
             },
         ],
     };
@@ -143,61 +185,57 @@ const AdminMainPage = () => {
                                 <thead>
                                     <tr>
                                         <th>일자</th>
-                                        <th>방문자 수</th>
+                                        <th>회원 방문자 수</th>
+                                        <th>비회원 방문자 수</th>
+                                        <th>총 방문자 수</th>
                                         <th>가입</th>
                                         <th>문의 수</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>2024-11-14</td>
-                                        <td>10</td>
-                                        <td>12</td>
-                                        <td>2</td>
+                                        <td>{visitorSummary.today.visitDate || "오늘"}</td>
+                                        <td>{visitorSummary.today.membersCount || 0}</td>
+                                        <td>{visitorSummary.today.todayGuestCount || 0}</td>
+                                        <td>{visitorSummary.today.totalMembersCount || 0}</td>
+                                        <td>{visitorSummary.today.newMembersCount || 0}</td>
+                                        <td>{visitorSummary.today.inquiriesCount || 0}</td>
                                     </tr>
-                                    <tr>
-                                        <td>2024-11-13</td>
-                                        <td>10</td>
-                                        <td>32</td>
-                                        <td>0</td>
-                                    </tr>
-                                    <tr>
-                                        <td>2024-11-12</td>
-                                        <td>9</td>
-                                        <td>2</td>
-                                        <td>1</td>
-                                    </tr>
-                                    <tr>
-                                        <td>2024-11-12</td>
-                                        <td>9</td>
-                                        <td>2</td>
-                                        <td>1</td>
-                                    </tr>
-                                    <tr>
-                                        <td>2024-11-12</td>
-                                        <td>9</td>
-                                        <td>2</td>
-                                        <td>1</td>
-                                    </tr>
+
+                                    {visitorSummary.last4Days.map((day, index) => (
+                                        <tr key={index}>
+                                            <td>{day.visitDate}</td>
+                                            <td>{day.memberVisitorsCount}</td>
+                                            <td>{day.guestVisitorsCount}</td>
+                                            <td>{day.totalVisitorsCount}</td>
+                                            <td>{day.newMembersCount}</td>
+                                            <td>{day.inquiriesCount}</td>
+                                        </tr>
+                                    ))}
                                 </tbody>
                                 <tfoot>
                                     <tr>
                                         <td>최근 7일 합계</td>
-                                        <td>55</td>
-                                        <td>55</td>
-                                        <td>20</td>
+                                        <td>{visitorSummary.last7DaysTotal.visitorMemberCount}</td>
+                                        <td>{visitorSummary.last7DaysTotal.visitorGuestCount}</td>
+                                        <td>{visitorSummary.last7DaysTotal.visitorTotalCount}</td>
+                                        <td>{visitorSummary.last7DaysTotal.newMembersCount}</td>
+                                        <td>{visitorSummary.last7DaysTotal.inquiriesCount}</td>
                                     </tr>
                                     <tr>
                                         <td>이번달 합계</td>
-                                        <td>100</td>
-                                        <td>99</td>
-                                        <td>46</td>
+                                        <td>{visitorSummary.thisMonthTotal.visitorMemberCount}</td>
+                                        <td>{visitorSummary.thisMonthTotal.visitorGuestCount}</td>
+                                        <td>{visitorSummary.thisMonthTotal.visitorTotalCount}</td>
+                                        <td>{visitorSummary.thisMonthTotal.newMembersCount}</td>
+                                        <td>{visitorSummary.thisMonthTotal.inquiriesCount}</td>
                                     </tr>
                                 </tfoot>
                             </table>
                         </div>
                     </div>
                 </div>
+
             </div>
             {/* 두번째 행 영역 */}
             <div className={styles.dashboardRow}>

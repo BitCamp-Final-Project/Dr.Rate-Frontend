@@ -99,7 +99,8 @@ const ServiceCenterPage = () => {
               <div className={styles.newAnswerSection}>새 답변</div>
               </button>
             <div className={styles.emailActions}>
-              <button className={styles.emailButton}>이메일 문의하기</button>
+              <button className={styles.emailButton} onClick={()=>navigate(PATH.EMAIL_INQUIRE)}>
+                이메일 문의하기</button>
               <button className={styles.copyButton}>이메일 주소 복사하기</button>
             </div>
           </div>

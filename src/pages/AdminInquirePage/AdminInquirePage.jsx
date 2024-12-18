@@ -285,7 +285,7 @@ const AdminInquirePage = () => {
                                     placeholder='메세지 입력'
                                     value={inputMessage}
                                     onChange={(e) => setInputMessage(e.target.value)}
-                                    onKeyPress={handleKeyPress} // Enter 입력 이벤트 추가
+                                    onKeyDown={handleKeyPress} // Enter 입력 이벤트 추가
                                 />
                                 {inputMessage.trim() && (
                                     <button className={styles.sendButton} onClick={handleSendMessage}>

@@ -8,6 +8,7 @@ import scatterHana from 'src/assets/images/scatterHana.png';
 import scatterWoori from 'src/assets/images/scatterWoori.png';
 import scatterShinhan from 'src/assets/images/scatterShinhan.png';
 import homeBGPhone from "src/assets/images/homeBGPhone.png";
+import { trackVisitor } from "src/utils/visitorTracker";
 
 const HomePage = () => {
     const [scatterCollapsed, setScatterCollapsed] = useState(false);
@@ -17,6 +18,9 @@ const HomePage = () => {
     const [phoneFrameFullVisible, setPhoneFrameFullVisible] = useState(false);
 
     useEffect(() => {
+        // 방문자 수 조회 (회원/비회원 구분)
+        const authToken = localStorage.getItem("authToken");
+        trackVisitor(authToken); // 방문자 기록 함수 실행
         // body에 클래스 추가
         document.body.classList.add(styles.homeBody);
 

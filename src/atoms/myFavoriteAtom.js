@@ -3,6 +3,16 @@
 
 import { atom } from 'jotai';
 
+// category 상태 관리 (deposit 또는 installment)
+export const categoryAtom = atom('deposit'); // 기본값: deposit
+
+// favoriteData 상태
+export const favoriteDataAtom = atom([]);
+
+// 검색 키와 검색 값 상태
+export const searchKeyAtom = atom('bankName'); // 기본 검색 키
+export const searchValueAtom = atom(''); // 검색 값
+
 // 전체 체크박스 상태
 export const allCheckedAtom = atom(false);
 
@@ -27,4 +37,9 @@ export const setIndividualCheckedAtom = atom(
         set(individualCheckedAtom, updatedArray);
         set(allCheckedAtom, allChecked);
     }
+);
+
+// 선택된 항목 여부 atom 추가
+export const hasSelectedItemsAtom = atom(
+    (get) => get(individualCheckedAtom).some((checked) => checked) 
 );

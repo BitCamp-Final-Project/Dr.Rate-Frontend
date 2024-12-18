@@ -7,6 +7,7 @@ import styles from './SignInPage.module.scss';
 import googleIcon from 'src/assets/socialIcons/Google-Icon.png';
 import kakaoIcon from 'src/assets/socialIcons/Kakao-Icon.png';
 import naverIcon from 'src/assets/socialIcons/Naver-Icon.png';
+import { PATH } from '../../utils/path';
 
 const SignInPage = () => {
     const navigate = useNavigate();  // navigate 훅 사용
@@ -22,26 +23,7 @@ const SignInPage = () => {
 
     // 로그인 후 JWT 처리 함수
     const handleOAuthLogin = async (provider) => {
-        try {
-            // 소셜 로그인 URL 요청
-            const response = await axios.get(`http://localhost:8080/oauth2/authorization/${provider}`, {
-                withCredentials: true, // 쿠키를 함께 전송
-            });
-
-            // 백엔드로부터 JWT를 가져옴
-            const { token } = response.data;
-            if (token) {
-                console.log("Received JWT:", token);
-                localStorage.setItem("accessToken", token); // JWT를 localStorage에 저장
-                window.location.href = "http://localhost:5173/"; // 메인 페이지로 이동
-            }
-        } catch (error) {
-            console.error(`Failed to login with ${provider}:`, error);
-            // OAuth 로그인 실패 시 모달 띄우기
-            setModalTitle("로그인 실패");
-            setModalMessage("로그인 중 오류가 발생했습니다.");
-            setShowModal(true);
-        }
+        window.location.href=`http://localhost:8080/login/${provider}`;
     };
 
     // 일반 로그인 처리 함수
@@ -56,7 +38,7 @@ const SignInPage = () => {
             if (token) {
                 console.log("Received JWT:", token);
                 localStorage.setItem("accessToken", token); // JWT를 localStorage에 저장
-                window.location.href = "http://localhost:5173/"; // 메인 페이지로 이동
+                window.location.href = `${PATH.HOME}`; // 메인 페이지로 이동
             } else {
                 // 로그인 실패 시 모달 띄우기
                 setModalTitle("로그인 실패");
@@ -74,7 +56,7 @@ const SignInPage = () => {
 
     // 회원가입 페이지로 이동
     const handleSignUpClick = () => {
-        navigate('/signUp');  // 회원가입 페이지로 이동
+        navigate(`${PATH.SIGN_UP}`);  // 회원가입 페이지로 이동
     };
 
     // 모달 닫기

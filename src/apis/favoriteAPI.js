@@ -7,7 +7,7 @@ import { PATH } from 'src/utils/path';
 const getSessionToken = () => {
   // return localStorage.getItem('sessionToken'); 
   // 그냥 토큰키 넣어서 함.
-  return "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6OCwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJyb2xlIjoiUk9MRV9VU0VSIiwiaWF0IjoxNzM0MzExMDQ4LCJleHAiOjE3MzQzOTc0NDh9.xMLFbxgM8Rii9dw49kZ_QQD6pDH2cwDC9_bgpmQURcg";
+  return "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6OCwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJyb2xlIjoiUk9MRV9VU0VSIiwiaWF0IjoxNzM0NDg0NTUyLCJleHAiOjE3MzQ1NzA5NTJ9.hTBolZi4LYfZ9vwOxVtxOjQW0ZNthnUEh9kwDCCORpA";
 };
 
 

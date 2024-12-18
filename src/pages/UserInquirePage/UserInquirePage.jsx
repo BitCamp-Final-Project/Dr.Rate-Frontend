@@ -332,7 +332,7 @@ const UserInquirePage = () => {
                                         placeholder="메세지 입력"
                                         value={inputMessage}
                                         onChange={(e) => setInputMessage(e.target.value)} // 입력 값을 상태에 반영
-                                        onKeyPress={handleKeyPress} // Enter 키 이벤트 핸들러 추가
+                                        onKeyDown={handleKeyPress} // Enter 키 이벤트 핸들러 추가
                                     />
                                     {inputMessage.trim() && (
                                         <button className={styles.sendButton} onClick={handleSendMessage}>
