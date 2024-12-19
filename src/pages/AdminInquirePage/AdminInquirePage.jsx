@@ -7,10 +7,11 @@ import useModal from 'src/hooks/useModal';
 import AlertModal from 'src/components/Modal/AlertModal';
 import ConfirmModal from 'src/components/Modal/ConfirmModal';
 import { PATH } from 'src/utils/path';
+import api from 'src/apis/axiosInstanceAPI';
 
 const AdminInquirePage = () => {
     const { state } = useLocation();
-    const token = localStorage.getItem("authToken");
+    const token = localStorage.getItem("Authorization");
     const adminId = parseJwt(token)?.id;  // access token을 parse하여 id값 가져옴
     const roomId = state?.roomId || null; // 이전 list 페이지에서 전달된 roomId  
     const phoneScreenRef = useRef(null); // 스크롤 처리를 위한 ref
@@ -169,8 +170,10 @@ const AdminInquirePage = () => {
             const phoneScreen = phoneScreenRef.current;
             const previousScrollHeight = phoneScreen ? phoneScreen.scrollHeight : 0; // 이전 scrollHeight 저장
 
-            const response = await fetch(`${PATH.SERVER}/api/chatmessages/list?roomId=${roomId}&page=${currentPage}&size=15`);
-            const data = await response.json();
+            const response = await api.get(`/api/chatmessages/list`, {
+                params: { roomId, page: currentPage, size: 15 },
+            });
+            const data = response.data;
             if (data.success) {
                 const reversedMessages = data.result.content.reverse(); // 메시지 최신순 정렬
                 setMessages((prevMessages) => [...reversedMessages, ...prevMessages]); // 기존 메시지 앞에 추가
@@ -198,13 +201,11 @@ const AdminInquirePage = () => {
         formData.append("senderId", adminId);
 
         try {
-            const response = await fetch(`${PATH.SERVER}/chat/upload/${roomId}`, {
-                method: "POST",
-                headers: { Authorization: `Bearer ${token}` },
-                body: formData,
+            const response = await api.post(`/chat/upload/${roomId}`, formData, {
+                headers: { "Content-Type": "multipart/form-data" },
             });
+            const data = response.data;
 
-            const data = await response.json();
             if (data.success) {
                 console.log("File uploaded successfully:", data);
             } else {

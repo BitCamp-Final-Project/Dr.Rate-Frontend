@@ -6,9 +6,10 @@ import useModal from 'src/hooks/useModal';
 import AlertModal from 'src/components/Modal/AlertModal';
 import ConfirmModal from 'src/components/Modal/ConfirmModal';
 import { PATH } from 'src/utils/path';
+import api from 'src/apis/axiosInstanceAPI';
 
 const UserInquirePage = () => {
-    const token = localStorage.getItem("authToken");
+    const token = localStorage.getItem("Authorization");
     const userId = parseJwt(token)?.id;  // access token을 parse하여 id값 가져옴
     const phoneScreenRef = useRef(null);  // 스크롤 처리를 위한 ref
     const [messages, setMessages] = useState([]); // 메세지 데이터 저장
@@ -167,8 +168,14 @@ const UserInquirePage = () => {
             const phoneScreen = phoneScreenRef.current;
             const previousScrollHeight = phoneScreen ? phoneScreen.scrollHeight : 0; // 이전 scrollHeight 저장
 
-            const response = await fetch(`${PATH.SERVER}/api/chatmessages/list?roomId=${userId}&page=${currentPage}&size=15`);
-            const data = await response.json();
+            const response = await api.get(`/api/chatmessages/list`, {
+                params: {
+                    roomId: userId,
+                    page: currentPage,
+                    size: 15,
+                },
+            });
+            const data = response.data;
             if (data.success) {
                 const reversedMessages = data.result.content.reverse();
                 setMessages((prevMessages) => [...reversedMessages, ...prevMessages]);
@@ -197,13 +204,11 @@ const UserInquirePage = () => {
         formData.append("senderId", userId);
 
         try {
-            const response = await fetch(`${PATH.SERVER}/chat/upload/${userId}`, {
-                method: "POST",
-                headers: { Authorization: `Bearer ${token}` },
-                body: formData,
+            const response = await api.post(`/chat/upload/${userId}`, formData, {
+                headers: { "Content-Type": "multipart/form-data" },
             });
 
-            const data = await response.json();
+            const data = response.data;
             if (data.success) {
                 console.log("파일 업로드 성공: ", data);
             } else {
@@ -217,12 +222,8 @@ const UserInquirePage = () => {
 
     const handleInquiryClose = async () => {
         try {
-            const response = await fetch(`${PATH.SERVER}/api/chatrooms/${userId}`, {
-                method: "DELETE",
-                headers: { Authorization: `Bearer ${token}` },
-            });
-
-            const data = await response.json();
+            const response = await api.delete(`/api/chatrooms/${userId}`);
+            const data = response.data;
 
             closeConfirmModal();
             if (data.success) {

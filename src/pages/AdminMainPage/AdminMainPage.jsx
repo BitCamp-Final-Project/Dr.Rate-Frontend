@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styles from './AdminMainPage.module.scss';
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
-import { PATH } from "src/utils/path";
+import api from 'src/apis/axiosInstanceAPI';
 import userLogo from 'src/assets/icons/userIcon.png'
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
@@ -17,18 +17,15 @@ const AdminMainPage = () => {
     });
     const [newUsers, setNewUsers] = useState([]);  // 신규 회원 데이터를 저장
     const [inquireList, setInquireList] = useState([]);  // 신규 회원 데이터를 저장
-    const token = localStorage.getItem("authToken");
+
 
     // 신규 회원 데이터를 가져오는 함수
     const fetchNewUsers = async (page = 0) => {
         try {
-            const response = await fetch(
-                `${PATH.SERVER}/api/userList?page=${page}&size=4`, {
-                method: "GET",
-                headers: { Authorization: `Bearer ${token}` },
-            }
-            );
-            const data = await response.json();
+            const response = await api.get(`/api/userList`, {
+                params: { page, size: 4 },
+            });
+            const data = response.data;
 
             if (data.success) {
                 setNewUsers(data.result.content); // 회원 데이터 저장
@@ -42,13 +39,10 @@ const AdminMainPage = () => {
 
     const fetchInquiryList = async (page = 0) => {
         try {
-            const response = await fetch(
-                `${PATH.SERVER}/api/chatrooms/inquireList?page=${page}&size=4`, {
-                method: "GET",
-                headers: { Authorization: `Bearer ${token}` },
-            }
-            );
-            const data = await response.json();
+            const response = await api.get(`/api/chatrooms/inquireList`, {
+                params: { page, size: 4 },
+            });
+            const data = response.data;
 
             if (data.success) {
                 setInquireList(data.result.content); // 회원 데이터 저장
@@ -62,11 +56,8 @@ const AdminMainPage = () => {
 
     const fetchVisitorSummary = async () => {
         try {
-            const response = await fetch(`${PATH.SERVER}/api/visitor-summary`, {
-                method: "GET",
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            const data = await response.json();
+            const response = await api.get(`/api/visitor-summary`);
+            const data = response.data;
 
             if (data.success) {
                 setVisitorSummary(data.result); // 상태에 데이터 저장
@@ -110,18 +101,6 @@ const AdminMainPage = () => {
                 ],
                 borderColor: 'rgba(54, 162, 235, 1)',
                 backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                fill: true,
-                tension: 0.4,
-            },
-            {
-                label: '문의 수',
-                data: [
-                    visitorSummary.today.inquiriesCount,  // 오늘 문의 수
-                    visitorSummary.last7DaysTotal.inquiriesCount, // 최근 7일 문의 수
-                    visitorSummary.thisMonthTotal.inquiriesCount  // 이번 달 문의 수
-                ],
-                borderColor: 'rgba(75, 192, 192, 1)',
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
                 fill: true,
                 tension: 0.4,
             },
@@ -189,7 +168,6 @@ const AdminMainPage = () => {
                                         <th>비회원 방문자 수</th>
                                         <th>총 방문자 수</th>
                                         <th>가입</th>
-                                        <th>문의 수</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -199,7 +177,6 @@ const AdminMainPage = () => {
                                         <td>{visitorSummary.today.todayGuestCount || 0}</td>
                                         <td>{visitorSummary.today.totalMembersCount || 0}</td>
                                         <td>{visitorSummary.today.newMembersCount || 0}</td>
-                                        <td>{visitorSummary.today.inquiriesCount || 0}</td>
                                     </tr>
 
                                     {visitorSummary.last4Days.map((day, index) => (
@@ -209,7 +186,6 @@ const AdminMainPage = () => {
                                             <td>{day.guestVisitorsCount}</td>
                                             <td>{day.totalVisitorsCount}</td>
                                             <td>{day.newMembersCount}</td>
-                                            <td>{day.inquiriesCount}</td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -220,7 +196,6 @@ const AdminMainPage = () => {
                                         <td>{visitorSummary.last7DaysTotal.visitorGuestCount}</td>
                                         <td>{visitorSummary.last7DaysTotal.visitorTotalCount}</td>
                                         <td>{visitorSummary.last7DaysTotal.newMembersCount}</td>
-                                        <td>{visitorSummary.last7DaysTotal.inquiriesCount}</td>
                                     </tr>
                                     <tr>
                                         <td>이번달 합계</td>
@@ -228,7 +203,6 @@ const AdminMainPage = () => {
                                         <td>{visitorSummary.thisMonthTotal.visitorGuestCount}</td>
                                         <td>{visitorSummary.thisMonthTotal.visitorTotalCount}</td>
                                         <td>{visitorSummary.thisMonthTotal.newMembersCount}</td>
-                                        <td>{visitorSummary.thisMonthTotal.inquiriesCount}</td>
                                     </tr>
                                 </tfoot>
                             </table>

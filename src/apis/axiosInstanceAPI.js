@@ -5,7 +5,7 @@ import { PATH } from "../utils/path"; // 경로 import
 
 // axios 인스턴스 생성
 const api = axios.create({
-  baseURL: 'http://localhost:8080', // 서버의 기본 URL
+  baseURL: `${PATH.SERVER}`, // 서버의 기본 URL
   timeout: 10000,  // 타임아웃 설정
   headers: {
     'Content-Type': 'application/json',

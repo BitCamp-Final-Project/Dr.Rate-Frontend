@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { PATH } from "src/utils/path";
 import styles from './AdminInquireListPage.module.scss';
+import api from 'src/apis/axiosInstanceAPI';
 
 const AdminInquireListPage = () => {
     const navigate = useNavigate();
@@ -30,10 +31,10 @@ const AdminInquireListPage = () => {
                 queryParams.append("keyword", keyword.trim());
             }
 
-            const response = await fetch(
-                `${PATH.SERVER}/api/chatrooms/inquireList?${queryParams.toString()}`
-            );
-            const data = await response.json();
+            const response = await api.get(`/api/chatrooms/inquireList`, {
+                params: queryParams,
+            });
+            const data = response.data;
 
             if (data.success) {
                 setChatRooms(data.result.content);

@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 import styles from './AdminUserListPage.module.scss'
-import { PATH } from "src/utils/path";
+import api from 'src/apis/axiosInstanceAPI';
 
 const AdminUserListPage = () => {
     const [users, setUsers] = useState([]); // 사용자 데이터
     const [currentPage, setCurrentPage] = useState(0); // 현재 페이지
     const [totalPages, setTotalPages] = useState(0); // 총 페이지 수
-    const token = localStorage.getItem("authToken");
     const [searchType, setSearchType] = useState("email"); // 검색 타입
     const [keyword, setKeyword] = useState(""); // 검색어
 
@@ -23,14 +22,8 @@ const AdminUserListPage = () => {
                 queryParams.append("keyword", keywordParam.trim());
             }
 
-            const response = await fetch(
-                `${PATH.SERVER}/api/userList?${queryParams.toString()}`,
-                {
-                    method: "GET",
-                    headers: { Authorization: `Bearer ${token}` },
-                }
-            );
-            const data = await response.json();
+            const response = await api.get(`/api/userList`, { params: queryParams });
+            const data = response.data;
 
             if (data.success) {
                 setUsers(data.result.content);
