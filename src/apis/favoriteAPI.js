@@ -25,12 +25,12 @@ const checkFavorite = async (prdId) => {
  * @returns {Promise<Object>} - API 응답 데이터
  */
 const addFavorite = async (prdId) => {
-  const response = await axiosInstanceAPI.post(
-    `${PATH.SERVER}/api/favorite/addFavorite`, 
-    { prdId } 
-  );
-  return response.data;
-};
+    const response = await axiosInstanceAPI.post(
+      `${PATH.SERVER}/api/favorite/addFavorite`, 
+      { prdId } 
+    );
+    return response.data;
+  };
 
 
 
