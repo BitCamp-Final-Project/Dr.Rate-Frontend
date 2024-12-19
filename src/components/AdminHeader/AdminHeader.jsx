@@ -66,6 +66,10 @@ const AdminHeader = () => {
                                     navigate(PATH.ADMIN_INQUIRE_LIST);
                                     setIsMenuOpen(false);
                                 }}>1:1 문의</li>
+                                <li onClick={() => {
+                                    navigate(PATH.ADMIN_EMAIL_INQUIRE_LIST);
+                                    setIsMenuOpen(false);
+                                }}>이메일 문의</li>
                                 <li>로그아웃</li>
                                 <li onClick={() => {
                                     navigate(PATH.ADMIN_INQUIRE_LIST);

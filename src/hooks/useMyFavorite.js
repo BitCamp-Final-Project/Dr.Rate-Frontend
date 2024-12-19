@@ -28,7 +28,7 @@ const useMyFavorite = () => {
     const individualChecked = useAtomValue(individualCheckedAtom);
     const setIndividualChecked = useSetAtom(setIndividualCheckedAtom);
     const setAllCheckedState = useSetAtom(setAllCheckedAtom);
-    const hasSelectedItems = useAtomValue(hasSelectedItemsAtom); //  선택된 항목이 있는지 확인
+    const hasSelectedItems = useAtomValue(hasSelectedItemsAtom); // 선택된 항목이 있는지 확인
 
     const [loading, setLoading] = useState(true); // 로딩 상태
     const [error, setError] = useState(null); // 에러 상태
@@ -65,6 +65,7 @@ const useMyFavorite = () => {
 
     /* 페이지 URL 변경 감지 시 데이터 리로드 */
     useEffect(() => {
+        setSearchValue('');
         fetchFavorites();
     }, [fetchFavorites, location.pathname]);     
 

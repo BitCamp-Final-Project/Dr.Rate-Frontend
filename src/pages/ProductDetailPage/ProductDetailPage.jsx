@@ -11,6 +11,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { PATH } from "src/utils/path";
 import { atom, useAtom } from 'jotai';
+import useProducts from 'src/hooks/useProducts';
 import { useFavorite } from '../../hooks/useFavorite';
 import { getProductDetails } from 'src/apis/productsAPI';
 
@@ -31,7 +32,7 @@ const ProductDetailPage = () => {
     const { isFavorite, toggleFavorite, errorMessage } = useFavorite(prdId);
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const [favoriteClicked, setFavoriteClicked] = useState(false);
-
+    const { noIdMessage } = useProducts(prdId);
 
     /* Jotai 상태 관리 */
     const [products, setProducts] = useAtom(productsAtom);
@@ -203,16 +204,16 @@ const ProductDetailPage = () => {
 
     /* 유효하지 않은 상품 리다이렉트 팝업 */
     useEffect(() => {
-        if (errorMessage === "유효하지 않은 상품 ID입니다.") {
-          setIsPopupOpen(true); // 팝업 열기
+        if (noIdMessage) {
+            setIsPopupOpen(true); // 팝업 열기
         }
-      }, [errorMessage]);
+    }, [noIdMessage]);
 
     const popupMessage = (
-    <>
-        유효하지 않은 상품 ID입니다. <br />
-        목록으로 이동합니다.
-    </>
+        <>
+            {noIdMessage} <br />
+            목록으로 이동합니다.
+        </>
     );
 
     return (

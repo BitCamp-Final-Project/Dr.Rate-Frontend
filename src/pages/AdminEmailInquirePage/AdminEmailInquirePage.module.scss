@@ -1,0 +1,260 @@
+.emailInquireDiv {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--admin-body);
+    width: 100%;
+    height: 92%;
+
+
+    .emailInquireListArea {
+        display: flex;
+        flex-direction: row;
+        width: 95%;
+        height: 90%;
+        padding: 30px;
+        background-color: var(--white);
+
+
+        .buttonContainer {
+            display: flex;
+            /* 버튼 표시 */
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .emailInquireListUser {
+            display: flex;
+            padding: 10px;
+            flex-direction: column;
+            width: 50%;
+            height: 100%;
+            border-right: 1px solid #ddd;
+            overflow-y: auto;
+
+            div {
+                padding: 10px;
+                border-bottom: 1px solid #f0f0f0;
+                /* 각 영역 하단에 얇은 선 */
+            }
+
+            .inquiryType {
+                flex-grow: 0.5;
+            }
+
+            .userName {
+                flex-grow: 0.5;
+            }
+
+            .userEmail {
+                flex-grow: 0.5;
+            }
+
+            .inquiryTitle {
+                flex-grow: 0.5;
+            }
+
+            .inquiryContent {
+                flex-grow: 4;
+                /* 40% */
+                overflow-y: auto;
+                /* 내용이 많을 경우 스크롤 */
+            }
+
+            .inquiryAttachment {
+                flex-grow: 4;
+            }
+
+        }
+
+        .emailInquireListAdmin {
+            display: flex;
+            flex-direction: column;
+            width: 50%;
+            height: 100%;
+            padding: 10px;
+            overflow-y: auto;
+
+            .toggleButtons {
+                button {
+                    padding: 10px 20px;
+                    border: none;
+                    background-color: #007bff;
+                    color: white;
+                    cursor: pointer;
+                    border-radius: 5px;
+
+                    &:hover {
+                        background-color: #0056b3;
+                    }
+
+                    &:focus {
+                        outline: none;
+                    }
+                }
+            }
+
+            /* 공통 스타일 */
+            div {
+                display: flex;
+                flex-direction: column;
+                padding: 10px;
+                border-bottom: 1px solid #f0f0f0;
+                /* 각 섹션 구분 */
+            }
+
+            .sendEmailSection {
+                flex-grow: 1;
+                /* 5% */
+                display: flex;
+                align-items: center;
+                flex-direction: row;
+
+                p {
+                    font-size: 14px;
+                    margin-right: 10px;
+                }
+
+                input {
+                    flex-grow: 1;
+                    padding: 5px;
+                    margin-right: 10px;
+                    border: 1px solid #ccc;
+                    border-radius: 5px;
+                }
+
+                button {
+                    padding: 5px 10px;
+                    background-color: #007bff;
+                    color: #fff;
+                    font-size: 12px;
+                    border: none;
+                    border-radius: 5px;
+                    cursor: pointer;
+
+                }
+            }
+
+            .emailTitle {
+                flex-grow: 1;
+                /* 5% */
+
+                input {
+                    width: 100%;
+                    padding: 5px;
+                    border: 1px solid #ccc;
+                    border-radius: 5px;
+                }
+            }
+
+            .emailContent {
+                flex-grow: 10;
+
+                /* 50% */
+                textarea {
+                    width: 100%;
+                    height: 100%;
+                    padding: 10px;
+                    border: 1px solid #ccc;
+                    border-radius: 5px;
+                    resize: none;
+                }
+            }
+
+            .emailAttachment {
+                flex-grow: 8;
+                /* 40% */
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+
+                p {
+                    width: 20%;
+                }
+
+                input {
+                    padding: 5px;
+                    width: 80%;
+                }
+            }
+        }
+
+    }
+
+    @media (max-width: 880px) {
+        .toggleButtons {
+            display: flex;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+
+
+        .emailInquireListArea {
+            flex-direction: column;
+            /* 세로로 정렬 */
+
+            .toggleButtons {
+                display: flex !important;
+                /* 우선순위 강제 적용 */
+                margin-bottom: 20px;
+                justify-content: space-around;
+                flex-direction: row !important; 
+
+                button {
+                    padding: 10px 20px;
+                    border: none;
+                    background-color: #007bff;
+                    color: white;
+                    cursor: pointer;
+                    border-radius: 5px;
+
+                    &:hover {
+                        background-color: #0056b3;
+                    }
+
+                    &:focus {
+                        outline: none;
+                    }
+                }
+            }
+
+
+            .emailInquireListUser,
+            .emailInquireListAdmin {
+                width: 100%;
+                height: 100%;
+                overflow-y: auto;
+            }
+
+            .emailInquireListUser.active {
+                display: flex;
+                /* 유저 문의 화면 표시 */
+            }
+
+            .emailInquireListAdmin.active {
+                display: flex;
+                /* 관리자 답변 화면 표시 */
+            }
+
+            .emailInquireListUser {
+                border-right: none;
+            }
+
+        }
+    }
+
+    @media(max-width: 535px){
+        .sendEmailSection{            
+            flex-direction: column !important;
+            align-items: flex-start !important;
+
+            p{
+                padding: 10px 0px ;
+            }
+            input{
+                margin-bottom: 10px;
+            }
+        }
+    }
+
+}

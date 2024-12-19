@@ -5,12 +5,14 @@ export const PATH = {
   HOME: "/",
   SIGN_UP: "/signUp",
   SIGN_IN: "/signIn",
-  MY_DEPOSIT: "/myDeposit", // 마이페이지; 예금 즐겨찾기
+  MY_DEPOSIT: "/myDeposit",         // 마이페이지; 예금 즐겨찾기
   MY_INSTALLMENT: "/myInstallment", // 마이페이지; 적금 즐겨찾기
   MY_INFO: "/myInfo", // 마이페이지; 회원 정보 (조회)
   MY_EDIT: "/myEdit", // 마이페이지; 회원 정보 수정
-  MY_WITHDRAW: "/myWithdraw", // 마이페이지; 회원 탈퇴
-  MY_CALENDAR: "/myCalendar", // 마이페이지; 나의 적금 달력
+  MY_WITHDRAW: "/myWithdraw",       // 마이페이지; 회원 탈퇴
+  MY_CALENDAR: "/myCalendar",       // 마이페이지; 나의 적금 달력
+  MY_EMAIL_INQUIRE:"/myEmailInquire",    // 마이페이지; 이메일 문의 내역
+  MY_1V1_INQUIRE:"/my1v1Inquire",      // 마이페이지; 1:1 문의 내역
   OAUTH_HANDLER: "/oauthHandler",
 
   INSTALLMENT_LIST: "/product/installmentList", // 상품-적금리스트페이지; 필터페이지 -혜진
@@ -28,6 +30,8 @@ export const PATH = {
   ADMIN_USER_LIST: "/admin/userList",
   ADMIN_INQUIRE_LIST: "/admin/adminInquireList",
   ADMIN_INQUIRE: "/admin/adminInquire",
+  ADMIN_EMAIL_INQUIRE_LIST: "/admin/emailInquireList",
+  ADMIN_EMAIL_INQUIRE: "/admin/emailInquire",
 
   STORAGE_BANK: "https://kr.object.ncloudstorage.com/dr-rate/bankLogo",
   SERVER: "http://localhost:8080", // 배포 후 여기만 수정

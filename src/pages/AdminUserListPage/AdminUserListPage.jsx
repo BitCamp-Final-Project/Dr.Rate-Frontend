@@ -103,10 +103,10 @@ const AdminUserListPage = () => {
                         <tbody>
                             {users.map((user) => (
                                 <tr key={user.id} className={styles.row}>
-                                    <td>{user.email}</td>
-                                    <td>{user.username}</td>
-                                    <td>{user.role}</td>
-                                    <td>
+                                    <td data-label="이메일">{user.email}</td>
+                                    <td data-label="이름">{user.username}</td>
+                                    <td data-label="그룹 (역할)">{user.role}</td>
+                                    <td data-label="가입일자">
                                         {user.createdAt
                                             ? new Date(user.createdAt).toLocaleDateString()
                                             : "알 수 없음"}

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-//import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { PATH } from "src/utils/path";
 import styles from "./ProductDepListPage.module.scss";
 import verticalDividerIcon from 'src/assets/icons/verticalDivider.svg';
@@ -15,14 +15,39 @@ const ProductDepListPage = () => {
   const [sortType, setSortType] = useState("highRate"); // 초기값: 최고금리순
   const [active, setActive] = useState("단리");   //단리 디폴트
   const [joinType, setJoinType] = useState("비대면"); //비대면 디폴트
-//  const navigate = useNavigate();
- 
+
+  const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
+  const [itemsPerPage, setItemsPerPage] = useState(5); // 페이지당 항목 수
+  const [pageNumbers, setPageNumbers] = useState([]);
+  const navigate = useNavigate();
+  
+
+  const paginateProducts = (products) => {
+    const indexOfLastProduct = currentPage * itemsPerPage;
+    const indexOfFirstProduct = indexOfLastProduct - itemsPerPage;
+    return products.slice(indexOfFirstProduct, indexOfLastProduct);
+  };
+
+  useEffect(() => {
+    const filteredProducts = filterProducts(allProducts);
+    setProducts(paginateProducts(filteredProducts));
+    const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+    const newPageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
+    setPageNumbers(newPageNumbers);
+  }, [currentPage, allProducts, active, joinType]); // 모든 의존성 추가
+
+
+
  //241218 전체 상품 리스트 
   useEffect(() => {
     //fetchProductsByCtg("d"); // 초기에는 "d" 카테고리 데이터 가져오기
     fetchAllProducts(); // 모든 제품 가져오기
   }, []); // 빈 배열로 한 번만 호출
 
+ //241219 전체 상품 리스트 
+  useEffect(() => {
+    handleFilterByBank(); // selectedBanks가 변경될 때마다 자동으로 필터 적용
+  }, [selectedBanks]); // selectedBanks 의존성 추가
   
   //241217 - 비교담기버튼 클릭
   const handleClick = () => {
@@ -63,34 +88,85 @@ const ProductDepListPage = () => {
   };
   // 필터링된 제품 설정 (가입방식,  )
   const filterProducts = (allProducts) => {
-    const filtered = allProducts.filter((product) => {
+    return allProducts.filter((product) => {
       const meetsRateType = product.options && product.options[0].rateTypeKo === active;
       const meetsJoinType = joinType === "대면" 
         ? product.product.joinWay && product.product.joinWay.includes("영업점")
-        : true; // 비대면 모든 상품
-
+        : true;
       return product.product.prdName.includes("예금") && meetsRateType && meetsJoinType;
     });
+  };
 
-    setProducts(filtered); // 필터링 저장
+   
+  // const handlePageClick = (pageNumber) => {
+  //   setCurrentPage(pageNumber);
+  // };
+
+  const handlePageClick = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    handleFilterByBank(); // 페이지 변경 시 필터 재적용
   };
 
 //241218 active 상태가 변경될 때마다 filterProducts 호출하여 products 상태에 반영
-useEffect(() => {
-  filterProducts(allProducts); // active가 변경되면 필터링 적용
-}, [active, allProducts, joinType]); // active가 변경될 때마다 필터링
+// useEffect(() => {
+//   filterProducts(allProducts); // active가 변경되면 필터링 적용
+// }, [active, allProducts, joinType]); // active가 변경될 때마다 필터링
 
   
   const handleBankChange = (e) => {
     const selectedBank = e.target.value;
     if (selectedBank && !selectedBanks.includes(selectedBank)) {
       setSelectedBanks([...selectedBanks, selectedBank]); // 새로운 은행 추가
+    }  else if (!selectedBank) {
+      setSelectedBanks([]); // 선택이 해제될 경우 모든 선택 해제
     }
+   // handleFilterByBank(); // 은행 선택 후 자동으로 필터 적용
   };
 
   const handleBankRemove = (bank) => {
     setSelectedBanks(selectedBanks.filter((item) => item !== bank)); // 은행 삭제
   };
+//1219----------------==-=-=-=-=-=========================================================================
+// 자동으로 필터 적용
+
+
+// const handleFilterByBank = () => {
+
+//   if (selectedBanks.length > 0) {
+//     const filteredProducts = allProducts.filter(product =>
+//       selectedBanks.some(bank => product.product.bankName.includes(bank)) && 
+//       product.product.prdName.includes("예금") // 예금 상품만 필터링
+//     );
+//     //setProducts(allProducts);
+//     setProducts(filteredProducts);
+//   } else {
+//     const allDepositProducts = allProducts.filter(product => product.product.prdName.includes("예금"));
+//     setProducts(allDepositProducts); // 전체 예금 상품으로 리셋
+//   }
+// };
+
+const handleFilterByBank = () => {
+  let filteredProducts;
+
+  // 선택된 은행이 있을 경우
+  if (selectedBanks.length > 0) {
+    filteredProducts = allProducts.filter(product =>
+      selectedBanks.some(bank => product.product.bankName.includes(bank)) &&
+      product.product.prdName.includes("예금") // 예금 상품만 필터링
+    );
+  } else {
+    // 선택된 은행이 없을 경우 모든 예금 상품을 보여줌
+    filteredProducts = allProducts.filter(product => product.product.prdName.includes("예금"));
+  }
+
+  // 페이징 처리
+  const paginatedProducts = paginateProducts(filteredProducts);
+  setProducts(paginatedProducts); // 현재 페이지에 맞는 상품만 설정
+
+  // 페이지 번호 업데이트
+  setPageNumbers(Array.from({ length: Math.ceil(filteredProducts.length / itemsPerPage) }, (_, i) => i + 1));
+};
+
 
 
 // 이자계산방식 const
@@ -167,9 +243,9 @@ useEffect(() => {
           <div className={styles.bankSelectDiv}>
             <select className={styles.bankSelect} onChange={handleBankChange}>
               <option value="">은행 선택</option>
-              <option value="KB 은행">KB 은행</option>
-              <option value="우리 은행">우리 은행</option>
-              <option value="국민 은행">국민 은행</option>
+              <option value="국민은행">KB국민 은행</option>
+              <option value="농협은행">NH농협 은행</option>
+              <option value="신한은행">신한 은행</option>
             </select>
           </div>
 
@@ -187,6 +263,11 @@ useEffect(() => {
               </div>
             ))}
           </div>
+    {/* 필터 버튼 -----------------------------------------------------------------------------*/}
+    {/* <button onClick={handleFilterByBank} className={styles.filterButton}>
+            필터 적용
+          </button> */}
+
         </div>
 
 {/* -----------------------------비회원 보이는 배너 ----------------------------- */}
@@ -239,7 +320,7 @@ useEffect(() => {
               onChange={handleFilterChange}
               style={{
                 padding: "8px",
-                width: "55%",
+                width: "42%",
                 border: "1px solid #ccc",
                 borderRadius: "5px",
                 height: "40px",
@@ -389,15 +470,27 @@ useEffect(() => {
 
   
 {/* ---------------------------페이징처리 ---------------------------------*/ }
-  <div className={styles.pagination}>
-                    <div className={styles.pageBtn}>
-                        <button disabled>Previous</button>
-                        <button className={styles.active}>1</button>
-                        <button>2</button>
-                        <button>3</button>
-                        <button>4</button>
-                        <button>5</button>
-                        <button>Next</button>
+<div className={styles.pagination}>
+  <div className={styles.pageBtn}>
+
+                         {/* 이전 페이지 버튼 */}
+                         <button onClick={() => handlePageClick(currentPage - 1)} disabled={currentPage === 1}>
+              이전
+            </button>
+
+
+    {pageNumbers.map((number) => (
+              <button
+                key={number}
+                onClick={() => handlePageClick(number)}
+                className={currentPage === number ? styles.activePage : ""}
+              >
+                {number}
+              </button>
+            ))}
+            <button onClick={() => handlePageClick(currentPage + 1)} disabled={currentPage === pageNumbers.length}>
+              다음
+            </button>
                     </div>
                 </div>
 
@@ -411,6 +504,3 @@ useEffect(() => {
 };
 
 export default ProductDepListPage;
-
-
-

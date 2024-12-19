@@ -329,7 +329,7 @@
     }
 }
 
-@media (max-width: 500px) {
+@media (max-width: 590px) {
     .inquireListDiv {
         padding: 10px;
         height: auto;
@@ -407,5 +407,43 @@
                 }
             }
         }
+    }
+}
+
+@media (max-width: 440px) {
+    .inquireListTable table,
+    .inquireListTable thead,
+    .inquireListTable tbody,
+    .inquireListTable th,
+    .inquireListTable td,
+    .inquireListTable tr {
+        display: block;
+        width: 100%;
+    }
+
+    .inquireListTable thead {
+        display: none; 
+    }
+
+    .inquireListTable tr {
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 10px;
+    }
+
+    .inquireListTable td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+        padding: 10px 0;
+        text-align: left;
+    }
+
+    .inquireListTable td:before {
+        content: attr(data-label);
+        font-weight: bold;
+        margin-right: 10px;
     }
 }

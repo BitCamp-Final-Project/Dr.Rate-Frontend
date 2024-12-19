@@ -1,10 +1,9 @@
-/* src/atoms/myFavoriteAtom.js */
 /* 마이페이지 즐겨찾기; MyDepositPage, MyInstallmentPage */
 
 import { atom } from 'jotai';
 
 // category 상태 관리 (deposit 또는 installment)
-export const categoryAtom = atom('deposit'); // 기본값: deposit
+export const categoryAtom = atom('deposit'); // 기본 상품 유형
 
 // favoriteData 상태
 export const favoriteDataAtom = atom([]);

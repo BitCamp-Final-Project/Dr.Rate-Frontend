@@ -86,7 +86,6 @@ const AdminInquireListPage = () => {
                             }}
                         />
                         <button onClick={handleSearch}>조회</button>
-                        <button onClick={handleSearch}>조회</button>
                     </div>
                 </div>
                 <div className={styles.inquireListTable}>
@@ -108,11 +107,11 @@ const AdminInquireListPage = () => {
                                     onClick={() => room.status === "OPEN" && navigate(PATH.ADMIN_INQUIRE, { state: { roomId: room.id } })}
                                     style={{ cursor: room.status === "CLOSED" ? "not-allowed" : "pointer" }} // 완료 상태면 클릭 불가
                                 >
-                                    <td>{room.id}</td>
-                                    <td>{room.email}</td>
-                                    <td>{room.userName}</td>
-                                    <td>{room.updatedAt ? new Date(room.updatedAt).toLocaleString() : "N/A"}</td>
-                                    <td>
+                                    <td data-label="방 번호">{room.id}</td>
+                                    <td data-label="이메일">{room.email}</td>
+                                    <td data-label="이름">{room.userName}</td>
+                                    <td data-label="최근 답변 날짜">{room.updatedAt ? new Date(room.updatedAt).toLocaleString() : "N/A"}</td>
+                                    <td data-label="답변 여부">
                                         <div className={styles.statusButtons}>
                                             <button
                                                 className={`${room.status === "CLOSED" ? styles.completed : styles.pending}`}

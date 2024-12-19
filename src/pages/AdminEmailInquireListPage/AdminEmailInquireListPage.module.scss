@@ -1,4 +1,4 @@
-.userListDiv {
+.emailInquireListDiv {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -6,7 +6,7 @@
     width: 100%;
     height: 92%;
 
-    .userListArea {
+    .emailInquireListArea {
         display: flex;
         flex-direction: column;
         width: 95%;
@@ -15,18 +15,18 @@
         background-color: var(--white);
 
         /* 헤더 */
-        .userListHeader {
+        .emailInquireListHeader {
             display: flex;
             flex-direction: column;
             width: 100%;
             height: 30%;
 
-            .userListTitle {
+            .emailInquireListTitle {
                 padding: 20px 0;
                 font-size: 20px;
             }
 
-            .userSearchBar {
+            .emailInquireSearchBar {
                 display: flex;
                 padding: 20px 0;
                 gap: 10px;
@@ -44,8 +44,8 @@
                         option {
                             font-size: 14px;
                             color: var(--black);
-                            background-color: #fff; 
-                            padding: 5px; 
+                            background-color: #fff;
+                            padding: 5px;
                             cursor: pointer;
                         }
                     }
@@ -55,7 +55,9 @@
                     width: 240px;
                 }
 
-                select, input {
+
+                select,
+                input {
                     font-size: 14px;
                     padding: 5px 10px;
                     border: 1px solid #ddd;
@@ -74,9 +76,6 @@
 
                 button {
                     width: 80px;
-                    display: flex;
-                    justify-self: center;
-                    align-items: center;
                     background-color: var(--font2);
                     color: #fff;
                     border: none;
@@ -92,6 +91,7 @@
 
                     &:active {
                         transform: scale(0.95);
+                        /* 클릭 시 버튼 축소 효과 */
                     }
                 }
 
@@ -99,7 +99,7 @@
         }
 
         /* 유저 목록 테이블 */
-        .userListTable {
+        .emailInquireListTable {
             width: 100%;
             height: 50%;
             margin-top: 20px;
@@ -109,10 +109,12 @@
                 text-align: center;
                 width: 100%;
                 border-collapse: collapse;
+
                 .row {
-                    cursor: pointer; 
+                    cursor: pointer;
+
                     &:hover {
-                        background-color: #f5f5f5; 
+                        background-color: #f5f5f5;
                     }
                 }
 
@@ -131,12 +133,13 @@
                 }
 
                 td {
-                    font-size : 14px;
+                    font-size: 14px;
 
                     &:hover {
                         background-color: #f7f7f7;
                         /* 셀 호버 효과 */
                     }
+
 
                     button {
                         padding: 6px 12px;
@@ -157,9 +160,103 @@
                             transform: scale(0.95);
                             /* 버튼 클릭 시 축소 */
                         }
+
+                        &:disabled {
+                            background-color: #e0e0e0;
+                            color: #a9a9a9;
+                            cursor: not-allowed;
+
+                            &:hover {
+                                transform: none;
+                                background-color: #e0e0e0; // 비활성 상태 유지
+                            }
+                        }
                     }
                 }
 
+                .statusButtons {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+
+                    button {
+                        border: none;
+                        font-size: 12px;
+                        font-weight: bold;
+                        cursor: pointer;
+                        width: 60px;
+                        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+
+                        &:hover {
+                            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+                        }
+
+                        &:disabled {
+                            background-color: #e0e0e0;
+                            border: 1px solid #d3d3d3;
+                            color: #a9a9a9;
+                            cursor: not-allowed;
+
+                            &:hover {
+                                background-color: #e0e0e0;
+                                box-shadow: none;
+                            }
+                        }
+                    }
+
+                    .completed,
+                    .completedActive {
+                        border-radius: 4px;
+                    }
+
+                    .completed {
+                        background-color: var(--white);
+                        color: var(--black);
+                        border: 1px solid var(--divider-border);
+                        border-right: none;
+
+                        &:hover {
+                            background-color: var(--admin-body);
+                        }
+                    }
+
+                    .completedActive {
+                        background-color: #d3d3d3;
+                        border: 1px solid #d3d3d3;
+                        color: #fff;
+
+                        &:hover {
+                            background-color: #d3d3d3;
+                        }
+                    }
+
+                    .pending,
+                    .pendingActive {
+                        border-radius: 4px;
+                    }
+
+                    .pendingActive {
+                        background-color: #0056b3;
+                        border: 1px solid #0056b3;
+                        color: #fff;
+
+                        &:hover {
+                            background-color: #003f87;
+                            border: 1px solid #003f87;
+                        }
+                    }
+
+                    .pending {
+                        background-color: var(--white);
+                        color: var(--black);
+                        border: 1px solid var(--divider-border);
+                        border-left: none;
+
+                        &:hover {
+                            background-color: var(--admin-body);
+                        }
+                    }
+                }
 
             }
         }
@@ -232,59 +329,80 @@
     }
 }
 
-@media (max-width: 570px) {
-    .userListDiv {
-        height: auto; /* 높이를 콘텐츠에 맞춤 */
+@media (max-width: 590px) {
+    .emailInquireListDiv {
         padding: 10px;
+        height: auto;
 
-        .userListArea {
+        .emailInquireListArea {
             padding: 15px;
             height: auto;
 
-            .userListHeader {
-                flex-direction: column; /* 검색 바를 세로로 배치 */
+            .emailInquireListHeader {
+                flex-direction: column;
                 align-items: stretch;
 
-                .userListTitle {
-                    font-size: 16px; /* 제목 크기 줄이기 */
-                    text-align: center; /* 중앙 정렬 */
+                .emailInquireListTitle {
+                    font-size: 16px;
+                    /* 제목 크기 줄이기 */
+                    text-align: center;
+                    /* 중앙 정렬 */
                 }
 
-                .userSearchBar {
-                    flex-direction: column; /* 검색 바를 세로 배치 */
+                .emailInquireSearchBar {
+                    flex-direction: column;
+                    /* 검색 바 세로 배치 */
                     gap: 8px;
 
-                    select, input {
-                        width: 100%; /* 전체 너비 차지 */
+                    select,
+                    input {
+                        width: 100%;
+                        /* 전체 너비 사용 */
                     }
 
                     button {
-                        width: 100%; /* 버튼도 전체 너비 */
+                        width: 100%;
+                        /* 버튼도 전체 너비 */
                     }
                 }
             }
 
-            .userListTable {
-                overflow-x: auto; /* 테이블 스크롤 추가 */
-                table {
-                    font-size: 12px; /* 테이블 텍스트 크기 축소 */
+            .emailInquireListTable {
+                margin-top: 20px;
+                overflow-x: auto;
+                /* 테이블 스크롤 허용 */
+                text-align: center;
 
+                table {
+                    font-size: 12px;
+
+                    /* 텍스트 크기 축소 */
                     th,
                     td {
-                        padding: 8px; /* 셀 패딩 축소 */
+                        padding: 8px;
+                        /* 셀 패딩 축소 */
+                    }
+
+                    .row {
+                        &:hover {
+                            background-color: #f5f5f5;
+                        }
                     }
                 }
             }
 
             .pagination {
-                justify-content: center; /* 페이지네이션 중앙 정렬 */
-                .pageBtn {
-                    flex-wrap: wrap; /* 버튼 줄바꿈 허용 */
-                    gap: 5px;
+                justify-content: center;
+                /* 페이지네이션 중앙 정렬 */
+                flex-wrap: wrap;
+                /* 줄 바꿈 허용 */
+                margin-top: 10px;
 
+                .pageBtn {
                     button {
-                        padding: 6px 12px; /* 버튼 크기 줄이기 */
+                        padding: 6px 12px;
                         font-size: 12px;
+                        /* 버튼 크기 줄이기 */
                     }
                 }
             }
@@ -292,29 +410,29 @@
     }
 }
 
-@media (max-width: 510px) {
-    .userListTable table,
-    .userListTable thead,
-    .userListTable tbody,
-    .userListTable th,
-    .userListTable td,
-    .userListTable tr {
+@media (max-width: 440px) {
+    .emailInquireListTable table,
+    .emailInquireListTable thead,
+    .emailInquireListTable tbody,
+    .emailInquireListTable th,
+    .emailInquireListTable td,
+    .emailInquireListTable tr {
         display: block;
         width: 100%;
     }
 
-    .userListTable thead {
-        display: none; /* 헤더 숨기기 */
+    .emailInquireListTable thead {
+        display: none; 
     }
 
-    .userListTable tr {
-        margin-bottom: 15px; /* 각 행 사이 간격 */
+    .emailInquireListTable tr {
+        margin-bottom: 15px;
         border: 1px solid #ddd;
         border-radius: 4px;
         padding: 10px;
     }
 
-    .userListTable td {
+    .emailInquireListTable td {
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -323,10 +441,9 @@
         text-align: left;
     }
 
-    .userListTable td:before {
+    .emailInquireListTable td:before {
         content: attr(data-label);
         font-weight: bold;
         margin-right: 10px;
-        /* 여기서 data-label로 각 td가 어떤 헤더에 해당하는지 알려줄 수 있음 */
     }
 }

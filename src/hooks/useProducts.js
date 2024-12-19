@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import { PATH } from "src/utils/path";
 
 const useProducts = (id) => {
     const [products, setProducts] = useState({
@@ -8,6 +9,8 @@ const useProducts = (id) => {
         product: null,
         conditions: []
     });
+
+    const [noIdMessage, setNoIdMessage] = useState(null);
 
     useEffect(() => {
         if (id) {
@@ -19,9 +22,16 @@ const useProducts = (id) => {
                         product: res.data.product,
                         conditions: res.data.conditions
                     });
+                    setNoIdMessage(null);
                     console.log(res.data);
                 })
-                .catch((e) => console.log(e));
+                .catch((error) => {
+                    if (error.response?.data?.message === "존재하지 않는 상품입니다.") {
+                        setNoIdMessage("존재하지 않는 상품입니다."); // 에러 메시지 저장
+                    } else {
+                        console.error("Failed to fetch product details:", error);
+                    }
+                });
         }
     }, [id]);
 
@@ -36,7 +46,8 @@ const useProducts = (id) => {
         optionNum,
         options,
         product,
-        conditions
+        conditions,
+        noIdMessage,
     };
 };
 

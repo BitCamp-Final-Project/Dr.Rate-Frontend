@@ -1,5 +1,3 @@
-/* src/pages/MyInstallmentPage/MyInstallmentPage.jsx */
-
 import styles from './MyInstallmentPage.module.scss';
 import React, { useEffect }  from 'react';
 import { PATH } from "src/utils/path";

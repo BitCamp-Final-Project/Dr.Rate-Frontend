@@ -6,6 +6,7 @@ import adminLogo from 'src/assets/images/adminLogo.png';
 import dashboard from 'src/assets/images/adminDashboard.png';
 import userManagement from 'src/assets/images/adminUserManagement.png';
 import inquiryHistory from 'src/assets/images/adminInquiryHistory.png';
+import inquiryEmailHistory from 'src/assets/images/adminEmailInquiryHistory.png';
 import whiteRightArrow from 'src/assets/icons/whiteRightArrow.svg';
 
 const AdminSideNav = () => {
@@ -65,6 +66,20 @@ const AdminSideNav = () => {
                             }}  
                         >
                             1:1 문의 내역
+                        </div>
+                    </div>
+                    <div className={ styles.adminMenuList } onClick={()=> navigate(PATH.ADMIN_EMAIL_INQUIRE_LIST)}>
+                        <div className={ styles.adminMenuItemImg}>
+                            <img src={inquiryEmailHistory} alt="이메일 문의 내역" className={styles.adminMenuImg} />
+                        </div>
+                        <div 
+                            className={ styles.adminMenuItemText }
+                            style={{
+                                fontWeight: isPathActive([PATH.ADMIN_EMAIL_INQUIRE_LIST, PATH.ADMIN_EMAIL_INQUIRE]) ? '700' : 'inherit',
+                                fontSize : isPathActive([PATH.ADMIN_EMAIL_INQUIRE_LIST, PATH.ADMIN_EMAIL_INQUIRE]) ? '18px' : 'inherit',
+                            }}  
+                        >
+                            이메일 문의 내역
                         </div>
                     </div>
                 {/* </div> */}

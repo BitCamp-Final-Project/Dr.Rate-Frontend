@@ -175,8 +175,8 @@ const MyCalendarPage = () => {
 
   //서버에서 이벤트 데이터를 가져오는 함수
   const fetchEvents = async () => {
-    const response = await axios.get(`${API_URL}/events`);
-    const formattedEvents = response.data.map(event => ({
+    const response = await axios.get(`${API_URL}/events`); // API에서 이벤트 데이터 가져옴
+    const formattedEvents = response.data.result.map(event => ({
       id: event.id, // 이벤트 ID 추가
       title: `${event.installment_name} - ${event.amount.toLocaleString()}원`,
       date: event.start_date,
@@ -188,12 +188,11 @@ const MyCalendarPage = () => {
         logoUrl: bankLogos[event.bank_name] || 'remainLogo.png', // 로고 URL 매핑
       },
     }));
-    setEvents(formattedEvents);
+    setEvents(formattedEvents); // 상태에 저장 (보이게)
   };
 
   // 이벤트 저장
   const saveEvent = async () => {
-    // 모든 정보가 입력되지 않은 경우 경고창 띄우기
     if (!savingName || !amount || !selectedDate || !endDate || !logoUrl) {
       openAlertModal('작성 불가', '모든 정보를 입력해주세요!');
       return; // 중단
@@ -291,7 +290,6 @@ const MyCalendarPage = () => {
   useEffect(() => {
     fetchEvents();
   }, []);
-
 
   return (
     <main>
@@ -598,17 +596,17 @@ const MyCalendarPage = () => {
               >
                 삭제
               </button>
-            </div> 
-            </>
-            ) : (
-            <button
-              onClick={saveEvent}
-              className={styles.modalButton}
-            >
-              저장
-            </button>
+            </div>
+          </>
+        ) : (
+          <button
+            onClick={saveEvent}
+            className={styles.modalButton}
+          >
+            저장
+          </button>
         )}
-          </Modal>
+      </Modal>
     </main>
   );
 };
