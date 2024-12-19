@@ -10,24 +10,35 @@ const MyNav = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const isPathActive = (paths) => paths.some((path) => location.pathname.includes(path));
-    const { isDropdownOpen, dropdownRef, handleMouseEnter, handleMouseLeave } = useDropdown();
-  
+    const {
+        isDropdownOpen: isFavoritesDropdownOpen,
+        dropdownRef: favoritesDropdownRef,
+        handleMouseEnter: handleFavoritesMouseEnter,
+        handleMouseLeave: handleFavoritesMouseLeave,
+    } = useDropdown();
+
+    const {
+        isDropdownOpen: isInquiryDropdownOpen,
+        dropdownRef: inquiryDropdownRef,
+        handleMouseEnter: handleInquiryMouseEnter,
+        handleMouseLeave: handleInquiryMouseLeave,
+    } = useDropdown();
 
     return (
         <nav id="MyNav" className={styles.myNav}>
             <ul className={styles.myMenuList}>
                 <li 
                     className={styles.myMenuItem} 
-                    onMouseEnter={handleMouseEnter}
-                    onMouseLeave={handleMouseLeave}                    
+                    onMouseEnter={handleFavoritesMouseEnter}
+                    onMouseLeave={handleFavoritesMouseLeave}                
                     style={{
                         color: isPathActive([PATH.MY_DEPOSIT, PATH.MY_INSTALLMENT]) ? 'var(--main1)' : 'inherit',
                     }}             
                 >
                     즐겨찾기
                     <img src={downArrowIcon} alt="Down arrow" className={styles.myNavDownArrow} />
-                    {isDropdownOpen && (
-                        <ul className={styles.MyDropdownMenu} ref={dropdownRef}>
+                    {isFavoritesDropdownOpen  && (
+                        <ul className={styles.MyDropdownMenu} ref={favoritesDropdownRef}>
                             <li className={styles.MyDropdownItem} onClick={() => navigate(PATH.MY_DEPOSIT)}>
                                 예금 즐겨찾기
                             </li>
@@ -56,6 +67,27 @@ const MyNav = () => {
                     }}                    
                 >
                     적금 달력
+                </li>
+                <li
+                    className={styles.myMenuItem}
+                    onMouseEnter={handleInquiryMouseEnter}
+                    onMouseLeave={handleInquiryMouseLeave}
+                    style={{
+                        color: isPathActive([PATH.MY_EMAIL_INQUIRE, PATH.MY_1V1_INQUIRE]) ? 'var(--main1)' : 'inherit',
+                    }} 
+                >
+                    문의 내역
+                    <img src={downArrowIcon} alt="Down arrow" className={styles.myNavDownArrow} />
+                    {isInquiryDropdownOpen && (
+                        <ul className={styles.InquireDropdownMenu} ref={inquiryDropdownRef}>
+                            <li className={styles.MyDropdownItem} onClick={() => navigate(PATH.MY_EMAIL_INQUIRE)}>
+                                이메일 문의
+                            </li>
+                            <li className={styles.MyDropdownItem} onClick={() => navigate(PATH.MY_1V1_INQUIRE)}>
+                                1:1 문의
+                            </li>
+                        </ul>
+                    )}
                 </li>
             </ul>
         </nav>

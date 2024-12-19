@@ -11,113 +11,112 @@ footer {
     justify-content: center;
     align-items: center;
     color: var(--font1);
-}
 
 
-.footerContainer {
-    width: 100%;
-    height: auto;
-    min-height: 120px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 13px;
 
-    .footerInfo {
-        height: 100%;
-        width: 60%;
+    .footerContainer {
+        width: 100%;
+        height: auto;
+        min-height: 120px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 13px;
 
-        .corName {
-            font-weight: bold;
-            width: 380px;
-            margin-bottom: 5px;
-            letter-spacing: 3px;
-            font-size: 14px;
-        }
+        .footerInfo {
+            height: 100%;
+            width: 60%;
 
-        .corAddress {
-            width: 380px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-
-            .footerDivider {
-                display: flex;
-                align-items: center;
+            .corName {
+                font-weight: bold;
+                width: 380px;
+                margin-bottom: 5px;
+                letter-spacing: 3px;
+                font-size: 14px;
             }
 
-            .addressTitle {
+            .corAddress {
+                width: 380px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 10px;
+
+                .footerDivider {
+                    display: flex;
+                    align-items: center;
+                }
+
+                .addressTitle {
+                    div {
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+
+                        span {
+                            font-weight: 700;
+                            color: #927663;
+                        }
+
+                        .noneSpan {
+                            visibility: hidden;
+                        }
+                    }
+                }
+
+                .firstRow {
+                    margin-bottom: 3px;
+                }
+
+            }
+
+            .corContact {
+                margin-top: 15px;
+                // width: 82%;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+
                 div {
                     display: flex;
                     justify-content: center;
                     align-items: center;
+                    gap: 7px;
 
-                    span {
+                    .contactTitle {
                         font-weight: 700;
                         color: #927663;
                     }
-
-                    .noneSpan {
-                        visibility: hidden;
-                    }
                 }
             }
 
-            .firstRow {
-                margin-bottom: 3px;
-            }
-
-        }
-
-        .corContact {
-            margin-top: 15px;
-            // width: 82%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-
-            div {
+            .corRight {
                 display: flex;
-                justify-content: center;
+                justify-content: flex-start;
                 align-items: center;
-                gap: 7px;
-
-                .contactTitle {
-                    font-weight: 700;
-                    color: #927663;
-                }
+                gap: 10px;
+                font-size: 11px;
             }
         }
 
 
-        .corRight {
+
+        .footerIcon {
+            height: 100%;
+            flex: 1; // footerInfo 제외 나머지 footerContainer 전체
             display: flex;
-            justify-content: flex-start;
-            align-items: center;
+            justify-content: flex-end;
+            align-items: flex-end;
             gap: 10px;
-            font-size: 11px;
-        }
-    }
+            padding: 10px;
 
-
-
-
-
-    .footerIcon {
-        height: 100%;
-        flex: 1; // footerInfo 제외 나머지 footerContainer 전체
-        display: flex;
-        justify-content: flex-end;
-        align-items: flex-end;
-        gap: 10px;
-        padding: 10px;
-
-        .iconSvg {
-            width: 40px;
-            aspect-ratio: 1 / 1;
-            /* 1:1 비율 */
-            object-fit: contain;
+            .iconSvg {
+                width: 40px;
+                aspect-ratio: 1 / 1;
+                /* 1:1 비율 */
+                object-fit: contain;
+                cursor: pointer;
+            }
         }
     }
 }
@@ -146,6 +145,7 @@ footer {
                     display: none;
                     width: 0;
                     height: 0;
+
                 }
             }
         }
@@ -163,6 +163,7 @@ footer {
         padding: 20px 3%;
     }
 }
+
 
 @media (max-width: 380px) {
     .footerContainer .footerInfo .corAddress {

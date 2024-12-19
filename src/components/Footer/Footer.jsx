@@ -73,10 +73,18 @@ const Footer = () => {
                 </div> {/* // <div className={ styles.footerInfo }> */}
 
                 <div className={ styles.footerIcon }>
-                    <div><img src={faviconIcon} alt="Footer Icon" className={ styles.iconSvg } /></div>
-                    <div><img src={labIcon} alt="Footer Icon" className={ styles.iconSvg } /></div>
-                    <div><img src={appstoreIcon} alt="Footer Icon" className={ styles.iconSvg } /></div>
-                    <div><img src={playstoreIcon} alt="Footer Icon" className={ styles.iconSvg } /></div>
+                    <div>
+                        <a href="https://www.dr-rate.store" target="_blank" rel="dr-rate">
+                            <img src={faviconIcon} alt="Dr.Rate Icon" className={ styles.iconSvg } />
+                        </a>
+                    </div>
+                    <div>
+                        <a href="https://github.com/BitCamp-Final-Project/Dr.Rate-Frontend" target="_blank" rel="Dr.Rate-Frontend">
+                            <img src={labIcon} alt="Lab Icon" className={ styles.iconSvg } />
+                        </a>
+                    </div>
+                    <div><img src={appstoreIcon} alt="Apple Icon" className={ styles.iconSvg } /></div>
+                    <div><img src={playstoreIcon} alt="Android Icon" className={ styles.iconSvg } /></div>
                 </div>
             </div>
         </footer>

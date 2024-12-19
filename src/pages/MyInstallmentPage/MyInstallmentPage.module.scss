@@ -1,11 +1,57 @@
 .favoriteSection {
     padding-top: 70px;
 
+    .errorDiv {
+        height: 300px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        .loadingImg {
+            width: 120px;
+            height: 120px;
+        }
+    }
+
     .favoriteListDiv {
         margin-top: 40px;
         display: flex;
         flex-direction: column;
         gap: 15px;
+
+        .noFavoriteList {
+            height: 280px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            h4 {
+                letter-spacing: 2px;
+                font-size: 20px;
+            }
+
+            .moveList {
+                margin-top: 10px;
+
+                .rightArrowIcon {
+                    width: 14px;
+                    height: 10px;
+                    margin: 0 4px 0 5px;
+                }
+
+                .listLink {
+                    color: var(--main1);
+                    cursor: pointer;
+                    margin-right: 2px;
+
+                    &:hover {
+                        text-decoration: underline;
+                    }
+                }
+            }
+        }
 
         .favoriteList {
             border: 1px solid var(--font2);

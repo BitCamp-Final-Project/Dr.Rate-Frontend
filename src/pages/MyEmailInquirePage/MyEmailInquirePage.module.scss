@@ -1,57 +1,34 @@
 .myEmailInquireSection {
     padding-top: 70px;
 
-    
-    
-    .inquireTypeContainer {
-        width: 100%;
+
+
+    .inquireTypeDiv {
+        font-size: 17px;
+        padding-top: 20px;
+        margin: 20px 0;
+        color: var(--font1);
         display: flex;
-        justify-content: center;
         align-items: center;
-        margin-top: 30px;
+        gap: 5px;
 
-        .inquireTypeDiv {
+        .inquireTypeItem {
             display: flex;
-            justify-content: center;
             align-items: center;
-            max-width: 180px;
-            font-size: 15px;
-            cursor: pointer;
 
-            .inquireType {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                width: 90px;
-                height: 40px;
+            .rightArrowIcon {
+                width: 14px;
+                height: 10px;
+            }
 
-                &:first-child {
-                    border-radius: 5px 0 0 5px;
-                    color: var(--white);
-                    background: var(--main2);
-
-                    &:hover {
-                        background: var(--main1);
-                    }
-                }
-
-                &:last-child {
-                    border-top: 1px solid var(--divider-border);
-                    border-right: 1px solid var(--divider-border);
-                    border-bottom: 1px solid var(--divider-border);
-                    border-radius: 0 5px 5px 0;
-                    color: var(--font2);
-
-                    &:hover {
-                        background: var(--bg1);
-                    }
-                }
+            &:nth-child(3) {
+                font-weight: 600;
             }
         }
     }
 
     .inquireListDiv {
-        margin: 20px auto;
+        margin: 30px auto;
         width: 90%;
         max-width: 800px;
         color: var(--black);
@@ -127,17 +104,22 @@
 
                     .inquireContentDiv {
                         margin-bottom: 15px;
-                    
+
                         .inquireContent {
-                            display: block; /* 블록 요소 유지 */
-                            white-space: pre-wrap !important; /* 공백과 줄바꿈 원본 그대로 유지 */
-                            line-height: 1.6; /* 줄 간격을 조절하여 보기 좋게 */
+                            display: block;
+                            /* 블록 요소 유지 */
+                            white-space: pre-wrap !important;
+                            /* 공백과 줄바꿈 원본 그대로 유지 */
+                            line-height: 1.6;
+                            /* 줄 간격을 조절하여 보기 좋게 */
                         }
                     }
 
                     .inquireFileDiv {
-                        border: 1px solid red;/* 확인용. 나중에 삭제 */
+                        border: 1px solid red;
+                        /* 확인용. 나중에 삭제 */
                         min-height: 100px;
+
                         .inquireFile {
                             width: 100px;
                             aspect-ratio: 1 / 1;
@@ -166,13 +148,14 @@
 
                     .answerContentDiv {
                         .answerContent {
-                            
+
                             white-space: pre-wrap;
                             line-height: 1.6;
                         }
                     }
 
                 }
+
                 .answerDate {
                     text-align: right;
                     font-size: 14px;
@@ -234,7 +217,7 @@
 
 /* ====================================== 가로 430px 이하 ====================================== */
 @media (max-width: 430px) {
-    .myEmailInquireSection{
+    .myEmailInquireSection {
         padding-top: 50px;
     }
 }

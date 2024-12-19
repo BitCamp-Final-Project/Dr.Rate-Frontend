@@ -1,50 +1,26 @@
 .my1v1InquireSection {
     padding-top: 70px;
-    width: 46%;
 
-    .inquireTypeContainer {
-        width: 100%;
+    .inquireTypeDiv {
+        font-size: 17px;
+        padding-top:20px;
+        margin: 20px 0;
+        color: var(--font1);
         display: flex;
-        justify-content: center;
         align-items: center;
+        gap: 5px;
 
-        .inquireTypeDiv {
-            margin-top: 30px;
+        .inquireTypeItem {
             display: flex;
-            justify-content: center;
             align-items: center;
-            max-width: 180px;
-            font-size: 15px;
-            cursor: pointer;
 
-            .inquireType {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                width: 90px;
-                height: 40px;
+            .rightArrowIcon {
+                width: 14px;
+                height: 10px;
+            }
 
-                &:first-child {
-                    border-top: 1px solid var(--divider-border);
-                    border-left: 1px solid var(--divider-border);
-                    border-bottom: 1px solid var(--divider-border);
-                    border-radius: 5px 0 0 5px;
-                    color: var(--font2);
-
-                    &:hover {
-                        background: var(--bg1);
-                    }
-                }
-
-                &:last-child {
-                    border-radius: 0 5px 5px 0;
-                    color: var(--white);
-                    background: var(--main2);
-
-                    &:hover {
-                        background: var(--main1);
-                    }
-                }
+            &:nth-child(3) {
+                font-weight: 600;
             }
         }
     }
@@ -52,308 +28,309 @@
 
 
 
-        
-    
-        .userInquireBody {
+
+
+    .userInquireBody {
+        width: 60%;
+        height: 80vh;
+        padding: 0;
+
+        .userInquireHeader {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
             width: 100%;
-            height: 80vh;
-    
-            .userInquireHeader {
+            margin-top: 10px;
+
+            .userInquireTitleArea {
                 display: flex;
-                flex-direction: row;
-                justify-content: space-between;
-                width: 100%;
-                margin-top: 10px;
-    
-                .userInquireTitleArea {
+                width: 30%;
+                min-width: 150px;
+                height: 100%;
+                align-items: center;
+
+                .userInquireTitle {
                     display: flex;
-                    width: 30%;
-                    min-width: 150px;
-                    height: 100%;
+                    justify-content: flex-start;
                     align-items: center;
-    
-                    .userInquireTitle {
-                        display: flex;
-                        justify-content: flex-start;
-                        align-items: center;
-                        height: 50px;
-                        width: 100%;
-                    }
+                    height: 50px;
+                    width: 100%;
                 }
-    
-                .userInquireQuitArea {
-                    display: flex;
-                    justify-content: flex-end;
-                    align-items: center;
-                    width: 30%;
-                    height: 100%;
-    
-    
-                    .userInquireQuitBtn {
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                        height: 40px;
-                        width: 80%;
-                        border-radius: 30px;
-                        color: var(--white);
-                        background-color: #BECCEA;
-                        border-style: none;
-                    }
-                }
-    
             }
-    
-            .userInquireChat {
+
+            .userInquireQuitArea {
                 display: flex;
-                justify-content: center;
-                width: 100%;
-                height: 85%;
-    
-                .phoneContainer {
-                    width: 100%; // 일반적인 핸드폰 너비
-                    // width: 50%;
-                    height: 100%; // 핸드폰 높이
-                    border-radius: 30px; // 둥근 모서리
-                    padding: 7px;
+                justify-content: flex-end;
+                align-items: center;
+                width: 30%;
+                height: 100%;
+
+
+                .userInquireQuitBtn {
                     display: flex;
                     justify-content: center;
                     align-items: center;
-                    flex-direction: column;
-    
-                    /* 수정 */
-                    border: 2px dashed transparent;
-                    /* 기본 테두리 */
-                    transition: border-color 0.3s ease-in-out;
-    
-                    .phoneContainer.dragging {
-                        border-color: #007bff;
-                        /* 드래그 중인 경우 테두리 강조 */
-                    }
-    
-                    .dragOverlay {
-                        position: absolute;
-                        top: 0;
-                        left: 0;
-                        width: 100%;
-                        height: 100%;
-                        background: rgba(0, 0, 0, 0.5);
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                        color: white;
-                        font-size: 1.2rem;
-                        z-index: 1000;
-                        pointer-events: none;
-                    }
-    
-    
-                    .phoneScreen {
-                        width: 100%;
-                        height: 90%;
-                        background-color: #6286D3; // 핸드폰 화면 배경색
-                        border-radius: 20px 5px 0 0;
-                        overflow-y: auto;
-                        display: flex;
-                        flex-direction: column;
-                        padding: 10px;
-    
-                        &::-webkit-scrollbar {
-                            width: 8px;
-                            /* 스크롤바 너비 */
-                        }
-    
-                        &::-webkit-scrollbar-thumb {
-                            background-color: rgba(193, 193, 193, 0.5);
-                            /* 스크롤바 색상 */
-                            border-radius: 20px;
-                            /* 스크롤바 둥글게 */
-                        }
-    
-                        &::-webkit-scrollbar-track {
-                            background-color: rgba(245, 245, 245, 0.3);
-                            /* 트랙 색상 */
-                            border-radius: 10px;
-                            /* 트랙 둥글게 */
-                        }
-    
-                        &::-webkit-scrollbar-button {
-                            display: none;
-                            /* 상단/하단 삼각형 버튼 숨기기 */
-                        }
-    
-                        .chatMessage {
-                            display: flex;
-                            align-items: flex-end;
-                            padding-bottom: 8px;
-    
-                            .chatBubble {
-                                max-width: 70%; // 버블 크기 제한
-                                padding: 10px;
-                                border-radius: 10px;
-                                background-color: white;
-                                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-                                word-wrap: break-word; // 텍스트 자동 줄바꿈
-    
-                                .chatImage {
-                                    max-width: 150px;
-                                    max-height: 150px;
-                                    border-radius: 8px;
-                                    cursor: pointer;
-                                    transition: transform 0.2s;
-                                }
-    
-                                .chatImage:hover {
-                                    transform: scale(1.1);
-                                }
-                            }
-    
-                            .messageTimestamp {
-                                font-size: 0.8rem;
-                                /* 작은 크기로 표시 */
-                                color: rgba(255, 255, 255, 0.6);
-                                /* 흰색 투명도 적용 */
-                                margin-left: 8px;
-                                /* 메시지와 간격 추가 */
-                                display: inline-block;
-                                /* 인라인 블록으로 표시 */
-                                vertical-align: bottom;
-                                /* 메시지와 하단 정렬 */
-                            }
-                        }
-    
-                        .myMessage {
-                            justify-content: flex-end; // 내 메시지는 오른쪽 정렬
-                            padding-bottom: 8px;
-    
-                            .chatBubble {
-                                background-color: #e1ffc7; // 내 메시지 배경색
-    
-                                .chatImage {
-                                    max-width: 150px;
-                                    max-height: 150px;
-                                    border-radius: 8px;
-                                    cursor: pointer;
-                                    transition: transform 0.2s;
-                                }
-    
-                                .chatImage:hover {
-                                    transform: scale(1.1);
-                                }
-                            }
-    
-                            .messageTimestamp {
-                                font-size: 0.8rem;
-                                /* 작은 크기로 표시 */
-                                color: rgba(255, 255, 255, 0.6);
-                                /* 흰색 투명도 적용 */
-                                margin-right: 8px;
-                                /* 메시지와 간격 추가 */
-                                display: inline-block;
-                                /* 인라인 블록으로 표시 */
-                                vertical-align: bottom;
-                                /* 메시지와 하단 정렬 */
-                            }
-                        }
-    
-    
-                    }
-    
-                    .phoneScreenInput {
-                        width: 100%;
-                        height: 10%;
-                        /* 고정된 높이로 설정 */
-                        background-color: #EFEFEF;
-                        border-top: 1px solid #ccc;
-                        /* 입력창 상단 테두리 */
-                        display: flex;
-                        /* 내용 정렬을 위한 플렉스 컨테이너 */
-                        align-items: center;
-                        /* 세로 가운데 정렬 */
-                        padding: 0 10px;
-                        /* 좌우 여백 */
-                        box-sizing: border-box;
-                        /* 패딩 포함 크기 계산 */
-                        border-radius: 0px 0px 20px 20px;
-                        justify-content: center;
-    
-                        .phoneScreenFileInputArea {
-                            position: relative;
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                            width: 40px;
-                            /* 버튼 크기 */
-                            height: 40px;
-                            background-color: #fff;
-                            border-radius: 50%;
-                            /* 원형 버튼 */
-                            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-                            cursor: pointer;
-                            margin-right: 10px;
-                            /* 입력 필드와 간격 */
-    
-                            .fileInput {
-                                display: none;
-                                /* 실제 파일 업로드 필드는 숨김 */
-                            }
-    
-                            .fileUploadButton {
-                                display: flex;
-                                justify-content: center;
-                                align-items: center;
-                                font-size: 24px;
-                                color: #333;
-                                width: 100%;
-                                height: 100%;
-                                text-align: center;
-                                cursor: pointer;
-                            }
-                        }
-    
-                        .phoneScreenInputArea {
-                            display: flex;
-                            align-items: center;
-                            justify-content: space-between;
-                            background-color: white;
-                            width: 88%;
-                            height: 80%;
-                            border-radius: 20px;
-    
-                            input {
-                                border: none;
-                                outline: none;
-                                /* 포커스 시 테두리도 제거하려면 추가 */
-                                padding: 10px;
-                                width: 85%;
-                                height: 100%;
-                            }
-    
-                            .sendButton {
-                                flex-shrink: 0;
-                                /* 버튼 크기가 축소되지 않도록 설정 */
-                                width: 15%;
-                                /* 버튼 너비를 명확히 설정 */
-                                height: 80%;
-                                /* 버튼 높이 설정 (부모 높이 대비) */
-                                background-image: url('../../assets/icons/sendBtn.png');
-                                background-size: contain;
-                                /* 이미지 크기를 요소에 맞춤 */
-                                background-repeat: no-repeat;
-                                /* 반복 제거 */
-                                background-position: center;
-                                /* 중앙 배치 */
-                                background-color: transparent;
-                                border: none;
-                                cursor: pointer;
-                            }
-    
-                        }
-                    }
-    
+                    height: 40px;
+                    width: 80%;
+                    border-radius: 30px;
+                    color: var(--white);
+                    background-color: #BECCEA;
+                    border-style: none;
                 }
-    
-    
+            }
+
+        }
+
+        .userInquireChat {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            height: 85%;
+
+            .phoneContainer {
+                width: 100%; // 일반적인 핸드폰 너비
+                // width: 50%;
+                height: 100%; // 핸드폰 높이
+                border-radius: 30px; // 둥근 모서리
+                padding: 7px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
+
+                /* 수정 */
+                border: 2px dashed transparent;
+                /* 기본 테두리 */
+                transition: border-color 0.3s ease-in-out;
+
+                .phoneContainer.dragging {
+                    border-color: #007bff;
+                    /* 드래그 중인 경우 테두리 강조 */
+                }
+
+                .dragOverlay {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.5);
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    color: white;
+                    font-size: 1.2rem;
+                    z-index: 1000;
+                    pointer-events: none;
+                }
+
+
+                .phoneScreen {
+                    width: 100%;
+                    height: 90%;
+                    background-color: #6286D3; // 핸드폰 화면 배경색
+                    border-radius: 20px 5px 0 0;
+                    overflow-y: auto;
+                    display: flex;
+                    flex-direction: column;
+                    padding: 10px;
+
+                    &::-webkit-scrollbar {
+                        width: 8px;
+                        /* 스크롤바 너비 */
+                    }
+
+                    &::-webkit-scrollbar-thumb {
+                        background-color: rgba(193, 193, 193, 0.5);
+                        /* 스크롤바 색상 */
+                        border-radius: 20px;
+                        /* 스크롤바 둥글게 */
+                    }
+
+                    &::-webkit-scrollbar-track {
+                        background-color: rgba(245, 245, 245, 0.3);
+                        /* 트랙 색상 */
+                        border-radius: 10px;
+                        /* 트랙 둥글게 */
+                    }
+
+                    &::-webkit-scrollbar-button {
+                        display: none;
+                        /* 상단/하단 삼각형 버튼 숨기기 */
+                    }
+
+                    .chatMessage {
+                        display: flex;
+                        align-items: flex-end;
+                        padding-bottom: 8px;
+
+                        .chatBubble {
+                            max-width: 70%; // 버블 크기 제한
+                            padding: 10px;
+                            border-radius: 10px;
+                            background-color: white;
+                            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+                            word-wrap: break-word; // 텍스트 자동 줄바꿈
+
+                            .chatImage {
+                                max-width: 150px;
+                                max-height: 150px;
+                                border-radius: 8px;
+                                cursor: pointer;
+                                transition: transform 0.2s;
+                            }
+
+                            .chatImage:hover {
+                                transform: scale(1.1);
+                            }
+                        }
+
+                        .messageTimestamp {
+                            font-size: 0.8rem;
+                            /* 작은 크기로 표시 */
+                            color: rgba(255, 255, 255, 0.6);
+                            /* 흰색 투명도 적용 */
+                            margin-left: 8px;
+                            /* 메시지와 간격 추가 */
+                            display: inline-block;
+                            /* 인라인 블록으로 표시 */
+                            vertical-align: bottom;
+                            /* 메시지와 하단 정렬 */
+                        }
+                    }
+
+                    .myMessage {
+                        justify-content: flex-end; // 내 메시지는 오른쪽 정렬
+                        padding-bottom: 8px;
+
+                        .chatBubble {
+                            background-color: #e1ffc7; // 내 메시지 배경색
+
+                            .chatImage {
+                                max-width: 150px;
+                                max-height: 150px;
+                                border-radius: 8px;
+                                cursor: pointer;
+                                transition: transform 0.2s;
+                            }
+
+                            .chatImage:hover {
+                                transform: scale(1.1);
+                            }
+                        }
+
+                        .messageTimestamp {
+                            font-size: 0.8rem;
+                            /* 작은 크기로 표시 */
+                            color: rgba(255, 255, 255, 0.6);
+                            /* 흰색 투명도 적용 */
+                            margin-right: 8px;
+                            /* 메시지와 간격 추가 */
+                            display: inline-block;
+                            /* 인라인 블록으로 표시 */
+                            vertical-align: bottom;
+                            /* 메시지와 하단 정렬 */
+                        }
+                    }
+
+
+                }
+
+                .phoneScreenInput {
+                    width: 100%;
+                    height: 10%;
+                    /* 고정된 높이로 설정 */
+                    background-color: #EFEFEF;
+                    border-top: 1px solid #ccc;
+                    /* 입력창 상단 테두리 */
+                    display: flex;
+                    /* 내용 정렬을 위한 플렉스 컨테이너 */
+                    align-items: center;
+                    /* 세로 가운데 정렬 */
+                    padding: 0 10px;
+                    /* 좌우 여백 */
+                    box-sizing: border-box;
+                    /* 패딩 포함 크기 계산 */
+                    border-radius: 0px 0px 20px 20px;
+                    justify-content: center;
+
+                    .phoneScreenFileInputArea {
+                        position: relative;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        width: 40px;
+                        /* 버튼 크기 */
+                        height: 40px;
+                        background-color: #fff;
+                        border-radius: 50%;
+                        /* 원형 버튼 */
+                        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                        cursor: pointer;
+                        margin-right: 10px;
+                        /* 입력 필드와 간격 */
+
+                        .fileInput {
+                            display: none;
+                            /* 실제 파일 업로드 필드는 숨김 */
+                        }
+
+                        .fileUploadButton {
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            font-size: 24px;
+                            color: #333;
+                            width: 100%;
+                            height: 100%;
+                            text-align: center;
+                            cursor: pointer;
+                        }
+                    }
+
+                    .phoneScreenInputArea {
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        background-color: white;
+                        width: 88%;
+                        height: 80%;
+                        border-radius: 20px;
+
+                        input {
+                            border: none;
+                            outline: none;
+                            /* 포커스 시 테두리도 제거하려면 추가 */
+                            padding: 10px;
+                            width: 85%;
+                            height: 100%;
+                        }
+
+                        .sendButton {
+                            flex-shrink: 0;
+                            /* 버튼 크기가 축소되지 않도록 설정 */
+                            width: 15%;
+                            /* 버튼 너비를 명확히 설정 */
+                            height: 80%;
+                            /* 버튼 높이 설정 (부모 높이 대비) */
+                            background-image: url('../../assets/icons/sendBtn.png');
+                            background-size: contain;
+                            /* 이미지 크기를 요소에 맞춤 */
+                            background-repeat: no-repeat;
+                            /* 반복 제거 */
+                            background-position: center;
+                            /* 중앙 배치 */
+                            background-color: transparent;
+                            border: none;
+                            cursor: pointer;
+                        }
+
+                    }
+                }
+
+            }
+
+
         }
     }
 
@@ -362,14 +339,14 @@
 
 @media(max-width: 1320px) {
 
-        .userInquireBody {
-            width: 488px;
-        }
+    .userInquireBody {
+        width: 488px;
+    }
 
-        .phoneContainer {
-            width: 375px;
-        }
-    
+    .phoneContainer {
+        width: 375px;
+    }
+
 }
 
 

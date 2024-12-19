@@ -11,7 +11,8 @@ import useSelectDropdown from 'src/hooks/useSelectDropdown';
 import rightArrowIcon from 'src/assets/icons/rightArrow.svg';
 import downArrowIcon from 'src/assets/icons/downDetailArrow.svg';
 import AlertModal from 'src/components/Modal/AlertModal';
-import useModal from 'src/hooks/useModal';
+import ConfirmModal from 'src/components/Modal/ConfirmModal';
+
 
 const FavoritePanel = () => {
     const location = useLocation();
@@ -34,8 +35,16 @@ const FavoritePanel = () => {
         setSearchValue,
         handleSearch,
         hasSelectedItems,
+        handleDeleteClick,
+        isAlertOpen, 
+        openAlertModal,
+        closeAlertModal,
+        alertContent,
+        isConfirmOpen,
+        openConfirmModal,
+        closeConfirmModal,
+        confirmContent, 
     } = useMyFavorite();
-
 
     /* 드롭다운 상태 관리 */
     const { isDropdownOpen, setDropdownOpen,handleToggleDropdown, dropdownRef } = useSelectDropdown();
@@ -66,14 +75,6 @@ const FavoritePanel = () => {
         }
     };
 
-    const { handleDelete } = useMyFavorite();
-
-    const {
-        isAlertOpen,      
-        openAlertModal,   
-        closeAlertModal,  
-        alertContent
-    } = useModal();
 
 
     return (
@@ -161,7 +162,7 @@ const FavoritePanel = () => {
 
                 <button 
                     className={styles.favoriteDeleteBtn}
-                    onClick={() => handleDelete(openAlertModal)}
+                    onClick={() => handleDeleteClick()}
                 >
                     삭제
                 </button>
@@ -171,6 +172,14 @@ const FavoritePanel = () => {
                     title={alertContent.title}     
                     message={alertContent.message} 
                 />
+                <ConfirmModal
+                    isOpen={isConfirmOpen}           
+                    closeModal={closeConfirmModal}   
+                    title={confirmContent.title}     
+                    message={confirmContent.message} 
+                    onConfirm={confirmContent.onConfirm} 
+                    onCancel={confirmContent.onCancel}   
+                />                
             </div>
             
         </div>

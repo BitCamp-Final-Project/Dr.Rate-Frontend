@@ -8,7 +8,9 @@ import { PATH } from "src/utils/path";
 import MyNav from 'src/components/MyNav';
 import AlertModal from 'src/components/Modal/AlertModal';
 import ConfirmModal from 'src/components/Modal/ConfirmModal';
+import rightArrowIcon from 'src/assets/icons/rightArrow.svg';
 import api from 'src/apis/axiosInstanceAPI';
+
 
 
 const My1v1InquirePage = () => {
@@ -248,21 +250,14 @@ const My1v1InquirePage = () => {
             <MyNav />
 
             <section className={styles.my1v1InquireSection}>
-                <div className={styles.inquireTypeContainer}>
-                    <div className={styles.inquireTypeDiv}>
-                        <div
-                            className={styles.inquireType}
-                            onClick={() => navigate(PATH.MY_EMAIL_INQUIRE)}
-                        >
-                            이메일 문의
-                        </div>
-                        <div
-                            className={styles.inquireType}
-                            onClick={() => navigate(PATH.MY_1V1_INQUIRE)}
-                        >
-                            1:1 문의
-
-                        </div>
+                {/* 문의 내역 카테고리 - 예금 or 적금 */}
+                <div className={ styles.inquireTypeDiv }>
+                    <div className={ styles.inquireTypeItem }>문의 내역</div>
+                    <div className={ styles.inquireTypeItem }>
+                        <img src={rightArrowIcon} alt="오른쪽 화살표" className={styles.rightArrowIcon} />
+                    </div>
+                    <div className={ styles.inquireTypeItem }>
+                        1:1 문의
                     </div>
                 </div>
 

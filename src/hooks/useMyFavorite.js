@@ -15,8 +15,9 @@ import {
 } from 'src/atoms/myFavoriteAtom';
 import { useCallback, useState, useEffect } from 'react';
 import { getFavorite, searchFavorite, deleteFavorite } from 'src/apis/myFavoriteAPI';
+import useModal from 'src/hooks/useModal';
 
-// const useMyFavorite = (dataLength) => {
+
 const useMyFavorite = () => {
     const location = useLocation();
 
@@ -33,6 +34,16 @@ const useMyFavorite = () => {
     const [loading, setLoading] = useState(true); // 로딩 상태
     const [error, setError] = useState(null); // 에러 상태
 
+    const {         
+        isAlertOpen,
+        openAlertModal,
+        closeAlertModal,
+        alertContent,
+        isConfirmOpen,
+        openConfirmModal,
+        closeConfirmModal,
+        confirmContent, 
+    } = useModal();
 
     /* 개별 체크박스 상태 업데이트 */
     const handleIndividualCheck = (index, isChecked) => {
@@ -43,8 +54,6 @@ const useMyFavorite = () => {
             return updatedArray;
         });
     };
-
-
 
 
     /* 마이페이지 즐겨찾기 조회 */
@@ -91,12 +100,7 @@ const useMyFavorite = () => {
 
 
     /* 마이페이지 즐겨찾기 삭제 */
-    const handleDelete = async (openAlertModal) => { 
-        if (!hasSelectedItems) {
-            openAlertModal('삭제할 항목이 없습니다', '삭제할 상품을 선택해주세요');
-            return;
-        }
-
+    const handleConfirm = async () => {
         const selectedIds = favoriteData
             .filter((_, index) => individualChecked[index]) // 선택된 항목 필터링
             .map((item) => item.favoriteId); // ID만 추출
@@ -104,17 +108,33 @@ const useMyFavorite = () => {
         try {
             await deleteFavorite(selectedIds); // API 호출
             await fetchFavorites(); // 삭제 후 목록 갱신
+            closeConfirmModal(); // Confirm Modal 닫기
         } catch (error) {
             console.error('삭제 중 에러 발생:', error);
             throw error;
         }
     };
 
+    /* 취소 버튼 클릭 */
+    const handleCancel = () => {
+        closeConfirmModal(); // Confirm Modal 닫기
+    };
 
+    /* 삭제 버튼 클릭 */
+    const handleDeleteClick = () => {
+        if (!hasSelectedItems) {
+            openAlertModal('삭제할 항목이 없습니다', '삭제할 상품을 선택해주세요');
+            return;
+        }
 
-
-
-
+        // 확인 모달 표시
+        openConfirmModal(
+            '선택한 항목을 삭제하시겠습니까?',
+            '삭제할 항목을 확인해주세요.',
+            handleConfirm, 
+            handleCancel
+        );
+    };
 
     return {
         individualChecked,
@@ -129,8 +149,16 @@ const useMyFavorite = () => {
         setSearchValue,
         handleSearch,
         hasSelectedItems,
-        handleDelete,
-
+        handleDeleteClick,
+        isAlertOpen,
+        isAlertOpen, // AlertModal 상태
+        openAlertModal,
+        closeAlertModal,
+        alertContent,
+        isConfirmOpen,
+        openConfirmModal,
+        closeConfirmModal,
+        confirmContent, 
     };
 };
 

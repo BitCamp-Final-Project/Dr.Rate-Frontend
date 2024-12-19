@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import styles from './MyEmailInquirePage.module.scss';
 import { PATH } from "src/utils/path";
 import MyNav from 'src/components/MyNav'; 
+import rightArrowIcon from 'src/assets/icons/rightArrow.svg';
 
 // 객체 배열 함수; 문의 내역 가져오는 api 개발 시 삭제
 const emailInquireData = () => [
@@ -68,20 +69,14 @@ const MyEmailInquirePage = () => {
             <MyNav />
             <section className={styles.myEmailInquireSection}>
 
-                <div className={styles.inquireTypeContainer}>
-                    <div className={styles.inquireTypeDiv}>
-                        <div 
-                            className={styles.inquireType}
-                            onClick={() => navigate(PATH.MY_EMAIL_INQUIRE)}
-                        >
-                            이메일 문의
-                        </div>
-                        <div 
-                            className={styles.inquireType}
-                            onClick={() => navigate(PATH.MY_1V1_INQUIRE)}
-                        >
-                            1:1 문의
-                        </div>
+                {/* 문의 내역 카테고리 - 예금 or 적금 */}
+                <div className={ styles.inquireTypeDiv }>
+                    <div className={ styles.inquireTypeItem }>문의 내역</div>
+                    <div className={ styles.inquireTypeItem }>
+                        <img src={rightArrowIcon} alt="오른쪽 화살표" className={styles.rightArrowIcon} />
+                    </div>
+                    <div className={ styles.inquireTypeItem }>
+                        이메일 문의
                     </div>
                 </div>
 

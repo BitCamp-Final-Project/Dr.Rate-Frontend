@@ -56,8 +56,9 @@ const AdminMainPage = () => {
 
     const fetchVisitorSummary = async () => {
         try {
-            const response = await api.get(`/api/visitor-summary`);
+            const response = await api.get(`/api/admin/visitor-summary`);
             const data = response.data;
+
 
             if (data.success) {
                 setVisitorSummary(data.result); // 상태에 데이터 저장
