@@ -127,13 +127,15 @@
       padding: 20px 10px ;
       gap: 30px;
 
+      //241219 수정
       .filterDiv {
-        width: 40%;
+        width: 90%;
         display: flex;
-        flex-wrap: wrap;
         gap: 20px;
-        justify-content: space-between;
+        justify-content: center;
         align-items: center;
+        flex-wrap: nowrap;
+
 
         h4 {
           font-size: 20px;

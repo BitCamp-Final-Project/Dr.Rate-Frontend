@@ -8,14 +8,14 @@ import AlertModal from 'src/components/Modal/AlertModal';
 import ConfirmModal from 'src/components/Modal/ConfirmModal';
 import useModal from "../../hooks/useModal";
 
+
 const ProductDepListPage = () => {
   const [selectedBanks, setSelectedBanks] = useState([]); // 선택된 은행 목록
   const [products, setProducts] = useState([]);
   const [allProducts, setAllProducts] = useState([]);
   const [sortType, setSortType] = useState("highRate"); // 초기값: 최고금리순
-  const [active, setActive] = useState("단리");   //단리 디폴트
-  const [joinType, setJoinType] = useState("비대면"); //비대면 디폴트
-
+  const [active, setActive] = useState("");   //단리 디폴트
+  const [joinType, setJoinType] = useState(""); //비대면 디폴트
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
   const [itemsPerPage, setItemsPerPage] = useState(5); // 페이지당 항목 수
   const [pageNumbers, setPageNumbers] = useState([]);
@@ -28,13 +28,28 @@ const ProductDepListPage = () => {
     return products.slice(indexOfFirstProduct, indexOfLastProduct);
   };
 
+  // useEffect(() => {
+  //   const filteredProducts = filterProducts(allProducts);
+  //   setProducts(paginateProducts(filteredProducts));
+  //   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+  //   const newPageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
+  //   setPageNumbers(newPageNumbers);
+  // }, [currentPage, allProducts, active, joinType]); // 모든 의존성 추가
+
   useEffect(() => {
     const filteredProducts = filterProducts(allProducts);
     setProducts(paginateProducts(filteredProducts));
     const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
-    const newPageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
+    const maxPagesToShow = 5; // 한 번에 보여줄 최대 페이지 수
+    const startPage = Math.floor((currentPage - 1) / maxPagesToShow) * maxPagesToShow + 1;
+    const endPage = Math.min(startPage + maxPagesToShow - 1, totalPages);
+    
+    // 현재 그룹의 페이지 번호들 생성
+    const newPageNumbers = Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
     setPageNumbers(newPageNumbers);
-  }, [currentPage, allProducts, active, joinType]); // 모든 의존성 추가
+}, [currentPage, allProducts, active, joinType, itemsPerPage]); // 모든 의존성 추가
+
+
 
 
 
@@ -51,10 +66,10 @@ const ProductDepListPage = () => {
   
   //241217 - 비교담기버튼 클릭
   const handleClick = () => {
-  //  window.location.href = PATH.PRODUCT_COMPARE; 
-    window.location.href = "http://localhost:5173/product/compare/d";
+    window.location.href = PATH.PRODUCT_COMPARE; 
+    //navigate(PATH.PRODUCT_COMPARE); 
+    //window.location.href = "http://localhost:5173/product/compare/d";
     console.log("비교담기");
-   // navigate(PATH.PRODUCT_COMPARE); 
   }
 
   // 카테고리별 상품을 가져오고 필터 적용
@@ -72,14 +87,14 @@ const ProductDepListPage = () => {
   
   // 241217 필터 반영항목 테스트
   useEffect(() => {
-    console.log("콘솔 : products 필터 test:", products);
+    console.log("콘솔 : products 필터로그:", products);
   }, [products]);
   
 
   // 모든 상품가지고 오기  
   const fetchAllProducts = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/product/getAllProducts`);
+      const response = await axios.get(`http://localhost:8080/api/product/getAllProducts`);
       setAllProducts(response.data); // 모든 상품 데이터를 설정
      // filterProducts(response.data); // 가져온 데이터를 필터링
     } catch (error) {
@@ -89,10 +104,21 @@ const ProductDepListPage = () => {
   // 필터링된 제품 설정 (가입방식,  )
   const filterProducts = (allProducts) => {
     return allProducts.filter((product) => {
-      const meetsRateType = product.options && product.options[0].rateTypeKo === active;
-      const meetsJoinType = joinType === "대면" 
-        ? product.product.joinWay && product.product.joinWay.includes("영업점")
+      // const meetsRateType = product.options && product.options[0].rateTypeKo === active;
+      // const meetsJoinType = joinType === "대면" 
+      //   ? product.product.joinWay && product.product.joinWay.includes("영업점")
+      //   : true;
+
+      const meetsRateType = active ? product.options && product.options[0].rateTypeKo === active : true;
+
+      // 대면/비대면 필터를 항상 통과
+      const meetsJoinType = joinType ? 
+        (joinType === "대면" ? product.product.joinWay && product.product.joinWay.includes("영업점") : true) 
         : true;
+
+        // const meetsRateType = true;
+        // const meetsJoinType = true;
+       
       return product.product.prdName.includes("예금") && meetsRateType && meetsJoinType;
     });
   };
@@ -263,11 +289,10 @@ const handleFilterByBank = () => {
               </div>
             ))}
           </div>
-    {/* 필터 버튼 -----------------------------------------------------------------------------*/}
-    {/* <button onClick={handleFilterByBank} className={styles.filterButton}>
+{/* 필터 버튼 -----------------------------------------------------------------------------*/}
+{/* <button onClick={handleFilterByBank} className={styles.filterButton}>
             필터 적용
           </button> */}
-
         </div>
 
 {/* -----------------------------비회원 보이는 배너 ----------------------------- */}
@@ -311,47 +336,7 @@ const handleFilterByBank = () => {
 </div>
         {/* ----------------------------- 로그인 후 보이는 필터  -----------------------------*/}
         <div className={styles.filterTotalDiv}>
-          <div className={styles.filterDiv}>
-            <h4>나이</h4>
-            <input
-              type="number"
-              name="birth"
-              placeholder="생년월일(예시:19990909)"
-              onChange={handleFilterChange}
-              style={{
-                padding: "8px",
-                width: "42%",
-                border: "1px solid #ccc",
-                borderRadius: "5px",
-                height: "40px",
-                fontSize: "13px",
-              }}
-            />
-          </div>
-
-          <div className={styles.filterDiv} >
-            <h4>저축 예정 기간</h4>
-            <select name="period"
-              onChange={handleFilterChange}
-              style={{
-                padding: "8px",
-                width: "200px",
-                height: "40px",
-                marginRight: "10px",
-                border: "1px solid #ccc",
-                borderRadius: "5px",
-                
-              }}
-              defaultValue="3개월" 
-            >
-              <option value="">저축 예정 기간</option>
-              <option value="1개월">1개월</option>
-              <option value="3개월">3개월</option>
-              <option value="6개월">6개월</option>
-              <option value="12개월">12개월</option>
-            </select>
-          </div>
-
+          <div className={styles.filterDiv}> 
        
           {/*1216 필터 test 시작 ------------------------*/}
             <div className={styles.filterDiv}>
@@ -386,10 +371,14 @@ const handleFilterByBank = () => {
               onClick={() => handleJoinTypeChange("비대면")}
             >
               비대면
+           
             </button>
               </div>
-            </div>
+              </div>
+              </div>
+            
 
+           
           {/*test 필터 끝 ------------------------*/}
           {/*버튼 hidden*/}
           {/* <button
@@ -474,26 +463,31 @@ const handleFilterByBank = () => {
   <div className={styles.pageBtn}>
 
                          {/* 이전 페이지 버튼 */}
-                         <button onClick={() => handlePageClick(currentPage - 1)} disabled={currentPage === 1}>
-              이전
-            </button>
-
-
-    {pageNumbers.map((number) => (
-              <button
-                key={number}
-                onClick={() => handlePageClick(number)}
-                className={currentPage === number ? styles.activePage : ""}
-              >
-                {number}
-              </button>
-            ))}
-            <button onClick={() => handlePageClick(currentPage + 1)} disabled={currentPage === pageNumbers.length}>
-              다음
-            </button>
+                         <button 
+    onClick={() => setCurrentPage(pageNumbers[0] - 1)} 
+    disabled={pageNumbers[0] === 1}>
+    이전
+  </button>
+  
+  {/* 현재 페이지 그룹의 번호들 */}
+  {pageNumbers.map((number) => (
+    <button
+      key={number}
+      onClick={() => handlePageClick(number)}
+      className={currentPage === number ? styles.activePage : ""}
+    >
+      {number}
+    </button>
+  ))}
+  
+  {/* 다음 페이지 그룹 이동 버튼 */}
+  <button 
+    onClick={() => setCurrentPage(pageNumbers[pageNumbers.length - 1] + 1)} 
+    disabled={pageNumbers[pageNumbers.length - 1] === Math.ceil(allProducts.length / itemsPerPage)}>
+    다음
+  </button>
                     </div>
                 </div>
-
 {/* ---------------------------페이징처리끝---------------------------------*/ }
       </div>   
       </section>
