@@ -8,66 +8,198 @@ import AlertModal from 'src/components/Modal/AlertModal';
 import ConfirmModal from 'src/components/Modal/ConfirmModal';
 import useModal from "src/hooks/useModal";
 
+
 const ProductDepListPage = () => {
   const [selectedBanks, setSelectedBanks] = useState([]); // 선택된 은행 목록
   const [products, setProducts] = useState([]);
   const [allProducts, setAllProducts] = useState([]);
-  const [active, setActive] = useState("단리");   //단리 디폴트
-  const [joinType, setJoinType] = useState("비대면"); //비대면 디폴트
+  const [sortType, setSortType] = useState("highRate"); // 초기값: 최고금리순
+  const [active, setActive] = useState("");   //단리 디폴트
+  const [joinType, setJoinType] = useState(""); //비대면 디폴트
+  const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
+  const [itemsPerPage, setItemsPerPage] = useState(5); // 페이지당 항목 수
+  const [pageNumbers, setPageNumbers] = useState([]);
   const navigate = useNavigate();
- 
+  
+
+  const paginateProducts = (products) => {
+    const indexOfLastProduct = currentPage * itemsPerPage;
+    const indexOfFirstProduct = indexOfLastProduct - itemsPerPage;
+    return products.slice(indexOfFirstProduct, indexOfLastProduct);
+  };
+
+  // useEffect(() => {
+  //   const filteredProducts = filterProducts(allProducts);
+  //   setProducts(paginateProducts(filteredProducts));
+  //   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+  //   const newPageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
+  //   setPageNumbers(newPageNumbers);
+  // }, [currentPage, allProducts, active, joinType]); // 모든 의존성 추가
 
   useEffect(() => {
-    fetchProductsByCtg("d"); // 초기에는 "d" 카테고리 데이터 가져오기
+    const filteredProducts = filterProducts(allProducts);
+    setProducts(paginateProducts(filteredProducts));
+    const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+    const maxPagesToShow = 5; // 한 번에 보여줄 최대 페이지 수
+    const startPage = Math.floor((currentPage - 1) / maxPagesToShow) * maxPagesToShow + 1;
+    const endPage = Math.min(startPage + maxPagesToShow - 1, totalPages);
+    
+    // 현재 그룹의 페이지 번호들 생성
+    const newPageNumbers = Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
+    setPageNumbers(newPageNumbers);
+}, [currentPage, allProducts, active, joinType, itemsPerPage]); // 모든 의존성 추가
+
+
+
+
+
+ //241218 전체 상품 리스트 
+  useEffect(() => {
+    //fetchProductsByCtg("d"); // 초기에는 "d" 카테고리 데이터 가져오기
     fetchAllProducts(); // 모든 제품 가져오기
   }, []); // 빈 배열로 한 번만 호출
 
+ //241219 전체 상품 리스트 
+  useEffect(() => {
+    handleFilterByBank(); // selectedBanks가 변경될 때마다 자동으로 필터 적용
+  }, [selectedBanks]); // selectedBanks 의존성 추가
+  
   //241217 - 비교담기버튼 클릭
   const handleClick = () => {
+    window.location.href = PATH.PRODUCT_COMPARE; 
+    //navigate(PATH.PRODUCT_COMPARE); 
+    //window.location.href = "http://localhost:5173/product/compare/d";
     console.log("비교담기");
-    window.location.href = "http://localhost:5173/product/compare";
-  };
+  }
 
-  const fetchProductsByCtg = async (ctg) => {
-    try {
-      const response = await axios.get(
-        `http://localhost:8080/product/getProductsByCtg/${ctg}`
-      );
-      setProducts(response.data); // 가져온 데이터 설정
-    } catch (error) {
-      console.error("Error fetching products:", error);
-    }
-  };
-  console.log(products)
-  console.log(allProducts);
+  // 카테고리별 상품을 가져오고 필터 적용
+  // const fetchProductsByCtg = async (ctg) => {
+  //   try {
+  //     const response = await axios.get(`http://localhost:8080/product/getProductsByCtg/${ctg}`);
+  //     const filtered = response.data.filter((product) => {
+  //       return product.prdName.includes("예금") && product.option && product.option[0].rateTypeKo === active;
+  //     });
+  //     setProducts(filtered); // 필터링된 예금 제품만 상태에 반영
+  //   } catch (error) {
+  //     console.error("Error fetching products by category:", error);
+  //   }
+  // };
   
+  // 241217 필터 반영항목 테스트
+  useEffect(() => {
+    console.log("콘솔 : products 필터로그:", products);
+  }, [products]);
+  
+
+  // 모든 상품가지고 오기  
   const fetchAllProducts = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:8080/product/getAllProducts`
-      );
-      setAllProducts(response.data); // 가져온 데이터 설정
+      const response = await axios.get(`http://localhost:8080/api/product/getAllProducts`);
+      setAllProducts(response.data); // 모든 상품 데이터를 설정
+     // filterProducts(response.data); // 가져온 데이터를 필터링
     } catch (error) {
       console.error("Error fetching products:", error);
     }
   };
+  // 필터링된 제품 설정 (가입방식,  )
+  const filterProducts = (allProducts) => {
+    return allProducts.filter((product) => {
+      // const meetsRateType = product.options && product.options[0].rateTypeKo === active;
+      // const meetsJoinType = joinType === "대면" 
+      //   ? product.product.joinWay && product.product.joinWay.includes("영업점")
+      //   : true;
 
+      const meetsRateType = active ? product.options && product.options[0].rateTypeKo === active : true;
+
+      // 대면/비대면 필터를 항상 통과
+      const meetsJoinType = joinType ? 
+        (joinType === "대면" ? product.product.joinWay && product.product.joinWay.includes("영업점") : true) 
+        : true;
+
+        // const meetsRateType = true;
+        // const meetsJoinType = true;
+       
+      return product.product.prdName.includes("예금") && meetsRateType && meetsJoinType;
+    });
+  };
+
+   
+  // const handlePageClick = (pageNumber) => {
+  //   setCurrentPage(pageNumber);
+  // };
+
+  const handlePageClick = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    handleFilterByBank(); // 페이지 변경 시 필터 재적용
+  };
+
+//241218 active 상태가 변경될 때마다 filterProducts 호출하여 products 상태에 반영
+// useEffect(() => {
+//   filterProducts(allProducts); // active가 변경되면 필터링 적용
+// }, [active, allProducts, joinType]); // active가 변경될 때마다 필터링
+
+  
   const handleBankChange = (e) => {
     const selectedBank = e.target.value;
     if (selectedBank && !selectedBanks.includes(selectedBank)) {
       setSelectedBanks([...selectedBanks, selectedBank]); // 새로운 은행 추가
+    }  else if (!selectedBank) {
+      setSelectedBanks([]); // 선택이 해제될 경우 모든 선택 해제
     }
+   // handleFilterByBank(); // 은행 선택 후 자동으로 필터 적용
   };
 
   const handleBankRemove = (bank) => {
     setSelectedBanks(selectedBanks.filter((item) => item !== bank)); // 은행 삭제
   };
+//1219----------------==-=-=-=-=-=========================================================================
+// 자동으로 필터 적용
 
-    //이자계산방식 const
+
+// const handleFilterByBank = () => {
+
+//   if (selectedBanks.length > 0) {
+//     const filteredProducts = allProducts.filter(product =>
+//       selectedBanks.some(bank => product.product.bankName.includes(bank)) && 
+//       product.product.prdName.includes("예금") // 예금 상품만 필터링
+//     );
+//     //setProducts(allProducts);
+//     setProducts(filteredProducts);
+//   } else {
+//     const allDepositProducts = allProducts.filter(product => product.product.prdName.includes("예금"));
+//     setProducts(allDepositProducts); // 전체 예금 상품으로 리셋
+//   }
+// };
+
+const handleFilterByBank = () => {
+  let filteredProducts;
+
+  // 선택된 은행이 있을 경우
+  if (selectedBanks.length > 0) {
+    filteredProducts = allProducts.filter(product =>
+      selectedBanks.some(bank => product.product.bankName.includes(bank)) &&
+      product.product.prdName.includes("예금") // 예금 상품만 필터링
+    );
+  } else {
+    // 선택된 은행이 없을 경우 모든 예금 상품을 보여줌
+    filteredProducts = allProducts.filter(product => product.product.prdName.includes("예금"));
+  }
+
+  // 페이징 처리
+  const paginatedProducts = paginateProducts(filteredProducts);
+  setProducts(paginatedProducts); // 현재 페이지에 맞는 상품만 설정
+
+  // 페이지 번호 업데이트
+  setPageNumbers(Array.from({ length: Math.ceil(filteredProducts.length / itemsPerPage) }, (_, i) => i + 1));
+};
+
+
+
+// 이자계산방식 const
   const handleFilterChange = (value) => {
-    setActive(value);
-    console.log("필터 변경:", value); // 테스트용
-    // 추가 로직 구현
+    setActive(value); // active 값을 변경
+    console.log("필터 변경:", value);
+  // 필터링 함수는 useEffect에서 처리되므로 handleFilterChange에서 호출하지 않아도 됩니다.
   };
 
   //가입방식 변경 const
@@ -76,11 +208,12 @@ const ProductDepListPage = () => {
     console.log("가입 방식 변경:", value);
   };
 
-  const handleRateClick = () => {
-    console.log("금리 높은 순 버튼 클릭"); // 테스트용
-    // 추가 로직 구현
-  };
+  // const handleRateClick = () => {
+  //   console.log("금리 높은 순 버튼 클릭"); // 테스트용
+  //   // 추가 로직 구현
+  // };
 
+  //모달 const
   const {
     isConfirmOpen,
     openConfirmModal,
@@ -108,10 +241,23 @@ const ProductDepListPage = () => {
   const handleCancel = () => {
     closeConfirmModal();
   };
-   /* useModal 훅 */
+  
+  // 최고 금리순 일반금리순 적용 - 241218
+  const handleSortByRate = (type) => {
+    const sortedProducts = [...products];
+    if (type === "highRate") {
+      sortedProducts.sort((a, b) => b.options[0].spclRate - a.options[0].spclRate); // 최고 금리 순
+    } else if (type === "baseRate") {
+      sortedProducts.sort((a, b) => b.options[0].basicRate - a.options[0].basicRate); // 기본 금리 순
+    }
+    setSortType(type);
+    setProducts(sortedProducts);
+  };
+
+// ---------------------------------------------------------------------------------------------------------------
   return (
     <main className={styles.productListMain}>
-      <section>
+      <section> 
         <div className={styles.mainTitle}>
           <h3>예금</h3>
         </div>
@@ -123,9 +269,9 @@ const ProductDepListPage = () => {
           <div className={styles.bankSelectDiv}>
             <select className={styles.bankSelect} onChange={handleBankChange}>
               <option value="">은행 선택</option>
-              <option value="KB 은행">KB 은행</option>
-              <option value="우리 은행">우리 은행</option>
-              <option value="국민 은행">국민 은행</option>
+              <option value="국민은행">KB국민 은행</option>
+              <option value="농협은행">NH농협 은행</option>
+              <option value="신한은행">신한 은행</option>
             </select>
           </div>
 
@@ -143,9 +289,13 @@ const ProductDepListPage = () => {
               </div>
             ))}
           </div>
+{/* 필터 버튼 -----------------------------------------------------------------------------*/}
+{/* <button onClick={handleFilterByBank} className={styles.filterButton}>
+            필터 적용
+          </button> */}
         </div>
 
-{/* 비회원 보이는 배너 */}
+{/* -----------------------------비회원 보이는 배너 ----------------------------- */}
 {/* 241217 - 모달 적용 */}
 <div className={styles.nonMemberBanner}>
   <div className={styles.banner}
@@ -184,51 +334,11 @@ const ProductDepListPage = () => {
     />
   )}
 </div>
-        {/* 로그인 후 보이는 필터 */}
+        {/* ----------------------------- 로그인 후 보이는 필터  -----------------------------*/}
         <div className={styles.filterTotalDiv}>
-          <div className={styles.filterDiv}>
-            <h4>나이</h4>
-            <input
-              type="number"
-              name="birth"
-              placeholder="생년월일(예시:19990909)"
-              onChange={handleFilterChange}
-              style={{
-                padding: "8px",
-                width: "55%",
-                border: "1px solid #ccc",
-                borderRadius: "5px",
-                height: "40px",
-                fontSize: "13px",
-              }}
-            />
-          </div>
-
-          <div className={styles.filterDiv} >
-            <h4>저축 예정 기간</h4>
-            <select name="period"
-              onChange={handleFilterChange}
-              style={{
-                padding: "8px",
-                width: "200px",
-                height: "40px",
-                marginRight: "10px",
-                border: "1px solid #ccc",
-                borderRadius: "5px",
-                
-              }}
-              defaultValue="3개월" 
-            >
-              <option value="">저축 예정 기간</option>
-              <option value="1개월">1개월</option>
-              <option value="3개월">3개월</option>
-              <option value="6개월">6개월</option>
-              <option value="12개월">12개월</option>
-            </select>
-          </div>
-
+          <div className={styles.filterDiv}> 
        
-          {/*1216 test 시작 ------------------------*/}
+          {/*1216 필터 test 시작 ------------------------*/}
             <div className={styles.filterDiv}>
               <h4>이자 계산 방식</h4>
               <div className={styles.toggle}>
@@ -261,11 +371,15 @@ const ProductDepListPage = () => {
               onClick={() => handleJoinTypeChange("비대면")}
             >
               비대면
+           
             </button>
               </div>
-            </div>
+              </div>
+              </div>
+            
 
-          {/*test 끝 ------------------------*/}
+           
+          {/*test 필터 끝 ------------------------*/}
           {/*버튼 hidden*/}
           {/* <button
         onClick={handleRateClick}
@@ -284,19 +398,31 @@ const ProductDepListPage = () => {
         </div>
         {/* 금리순 정렬  */}
         <div className={styles.rateStandard}>
-        <span className={styles.textItem}>최고 금리순 </span>
+          <span
+            className={styles.textItem}
+            onClick={() => handleSortByRate("highRate")}
+            style={{ cursor: "pointer", fontWeight: sortType === "highRate" ? "bold" : "normal" }}
+          >
+            최고 금리순
+          </span>
           <li className={styles.userMenuItem}>
-          <img src={verticalDividerIcon} alt="세로 구분선" className={styles.verticalDivider} />
-      </li>                    
-      <span className={styles.textItem}>기본 금리순</span>
+            <img src={verticalDividerIcon} alt="세로 구분선" className={styles.verticalDivider} />
+          </li>
+          <span
+            className={styles.textItem}
+            onClick={() => handleSortByRate("baseRate")}
+            style={{ cursor: "pointer", fontWeight: sortType === "baseRate" ? "bold" : "normal" }}
+          >
+            기본 금리순
+          </span>
         </div>
-        {/* 리스트 */}
+        {/* -----------------------------리스트 ------------------------------------------------*/}
             {/** db 연동 상품 리스트  */}
             <div className={styles.productListDiv}>
           {allProducts.length === 0 ? (
             <p>표시할 데이터가 없습니다.</p>
           ) : (
-            allProducts.map((product, index) => (
+            products.map((product, index) => (
               <div
                 key={index}
                 className={styles.productList}
@@ -324,30 +450,45 @@ const ProductDepListPage = () => {
 
       
         {/* <div className={styles.productListBtn}><li>비교</li> 담기</div> */}
-        <div className={styles.productListBtn} onClick={() => handleClick()} // 클릭 이벤트 추가
->
-  <li>비교</li> 담기
-</div>     
-      </div>
+        <div className={styles.productListBtn} onClick={() => handleClick()}> 
+        <li>비교</li> 담기
+        </div>     
+        </div>
     ))
-    
   )}
 
   
-{/*페이징처리*/ }
-  <div className={styles.pagination}>
-                    <div className={styles.pageBtn}>
-                        <button disabled>Previous</button>
-                        <button className={styles.active}>1</button>
-                        <button>2</button>
-                        <button>3</button>
-                        <button>4</button>
-                        <button>5</button>
-                        <button>Next</button>
+{/* ---------------------------페이징처리 ---------------------------------*/ }
+<div className={styles.pagination}>
+  <div className={styles.pageBtn}>
+
+                         {/* 이전 페이지 버튼 */}
+                         <button 
+    onClick={() => setCurrentPage(pageNumbers[0] - 1)} 
+    disabled={pageNumbers[0] === 1}>
+    이전
+  </button>
+  
+  {/* 현재 페이지 그룹의 번호들 */}
+  {pageNumbers.map((number) => (
+    <button
+      key={number}
+      onClick={() => handlePageClick(number)}
+      className={currentPage === number ? styles.activePage : ""}
+    >
+      {number}
+    </button>
+  ))}
+  
+  {/* 다음 페이지 그룹 이동 버튼 */}
+  <button 
+    onClick={() => setCurrentPage(pageNumbers[pageNumbers.length - 1] + 1)} 
+    disabled={pageNumbers[pageNumbers.length - 1] === Math.ceil(allProducts.length / itemsPerPage)}>
+    다음
+  </button>
                     </div>
                 </div>
-
-{/*페이징처리 끝*/ }
+{/* ---------------------------페이징처리끝---------------------------------*/ }
       </div>   
       </section>
     </main>
@@ -357,5 +498,3 @@ const ProductDepListPage = () => {
 };
 
 export default ProductDepListPage;
-
-
