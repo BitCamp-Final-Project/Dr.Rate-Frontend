@@ -1,3 +1,3 @@
-import UserInquirePage from "./UserInquirePage";
+import UserInquirePage from './UserInquirePage';
 
 export default UserInquirePage;

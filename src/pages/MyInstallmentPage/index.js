@@ -1,3 +1,3 @@
-import MyInstallmentPage from "./MyInstallmentPage";
+import MyInstallmentPage from './MyInstallmentPage';
 
 export default MyInstallmentPage;

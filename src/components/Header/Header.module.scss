@@ -169,14 +169,6 @@
         box-shadow: -2px 0 8px rgba(0, 0, 0, 0.2);
         z-index: 2500; // 메뉴가 오버레이 위에 나타나도록 설정
 
-        /* 비회원 사이드 메뉴 */
-        .sideNonMemberMenu {
-            display: none;
-        }
-        
-        /* 회원 사이드 메뉴 */
-        .sideMemberMenu {
-        }
 
         .mobileSideHeader {
             height: 120px;
@@ -203,7 +195,7 @@
                 height: 60px;
 
                 .signInBtn, .signUpBtn {
-                    width: 120px;
+                    width: 48%;
                     height: 40px;
                 }
 
@@ -410,6 +402,17 @@
 
     .mobileSideNav {
         width: 77%;
+
+        .mobileSideHeader {
+            
+            .sideBtnDiv {
+                
+                .signInBtn, .signUpBtn {
+                    width: 48%;
+                    height: 34px;
+                }
+            }
+        }
     }
 
 }

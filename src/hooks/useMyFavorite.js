@@ -50,7 +50,6 @@ const useMyFavorite = () => {
         setIndividualChecked((prev) => {
             const updatedArray = [...prev];
             updatedArray[index] = isChecked;
-            console.log(updatedArray);
             return updatedArray;
         });
     };
@@ -150,7 +149,6 @@ const useMyFavorite = () => {
         handleSearch,
         hasSelectedItems,
         handleDeleteClick,
-        isAlertOpen,
         isAlertOpen, // AlertModal 상태
         openAlertModal,
         closeAlertModal,

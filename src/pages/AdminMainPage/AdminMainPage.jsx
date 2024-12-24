@@ -3,7 +3,7 @@ import styles from './AdminMainPage.module.scss';
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 import api from 'src/apis/axiosInstanceAPI';
-import userLogo from 'src/assets/icons/userIcon.png'
+import userLogo from 'src/assets/icons/userIcon.png';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
@@ -22,7 +22,7 @@ const AdminMainPage = () => {
     // 신규 회원 데이터를 가져오는 함수
     const fetchNewUsers = async (page = 0) => {
         try {
-            const response = await api.get(`/api/userList`, {
+            const response = await api.get(`/api/admin/userList`, {
                 params: { page, size: 4 },
             });
             const data = response.data;
@@ -39,7 +39,7 @@ const AdminMainPage = () => {
 
     const fetchInquiryList = async (page = 0) => {
         try {
-            const response = await api.get(`/api/chatrooms/inquireList`, {
+            const response = await api.get(`/api/admin/chatrooms/inquireList`, {
                 params: { page, size: 4 },
             });
             const data = response.data;

@@ -1,7 +1,7 @@
-import { useEffect } from "react";
+import { useEffect } from 'react';
 import React from 'react';
-import { useNavigate } from "react-router-dom";
-import {PATH} from "../../utils/path.js";
+import { useNavigate } from 'react-router-dom';
+import {PATH} from 'src/utils/path.js';
 
 const OAuthCallbackHandlerPage = () => {
     const navigate = useNavigate();

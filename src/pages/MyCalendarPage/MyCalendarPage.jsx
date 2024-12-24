@@ -5,20 +5,20 @@ import FullCalendar from '@fullcalendar/react'; // React용 FullCalendar
 import dayGridPlugin from '@fullcalendar/daygrid'; // 월간 보기
 import interactionPlugin from '@fullcalendar/interaction'; // 날짜 클릭
 import Modal from 'react-modal'; // 모달
-import axios from 'axios';
+import axiosInstanceAPI from '../../apis/axiosInstanceAPI'; // axiosInstanceAPI 
 
 import MyNav from 'src/components/MyNav'; //MyNav
 import AlertModal from 'src/components/Modal/AlertModal/AlertModal'; //AlertModal
 import ConfirmModal from 'src/components/Modal/ConfirmModal/ConfirmModal';
 import useModal from 'src/hooks/useModal'; //useModal 훅 추가
 
-import { PATH } from "src/utils/path"; //경로
+import { PATH } from 'src/utils/path'; //경로
 import leftArrowIcon from 'src/assets/icons/leftArrow.svg'; //icon
 import rightArrowIcon from 'src/assets/icons/rightArrow.svg';
 
 import styles from './MyCalendarPage.module.scss';
 
-const API_URL = 'http://localhost:8080/api/calendar'; //백 서버
+const API_URL = `${PATH.SERVER}/api/calendar`;  //백 서버
 
 // Jotai 상태 관리
 const eventsAtom = atom([]); // 이벤트 목록 저장
@@ -65,6 +65,7 @@ const MyCalendarPage = () => {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false); // ConfirmModal 열림 상태
   const [confirmContent, setConfirmContent] = useState({}); // ConfirmModal의 제목, 메시지, onConfirm 함수
 
+  // Confirm 모달
   const openConfirmModal = (title, message, onConfirm) => {
     setConfirmContent({ title, message, onConfirm });
     setIsConfirmOpen(true);
@@ -74,7 +75,8 @@ const MyCalendarPage = () => {
     setIsConfirmOpen(false);
   };
 
-  const calendarRef = useRef(null); // 캘린더 참조
+  // 캘린더 참조
+  const calendarRef = useRef(null); 
 
   //useModal 훅
   const { isAlertOpen, openAlertModal, closeAlertModal, alertContent } = useModal();
@@ -175,50 +177,59 @@ const MyCalendarPage = () => {
 
   //서버에서 이벤트 데이터를 가져오는 함수
   const fetchEvents = async () => {
-    const response = await axios.get(`${API_URL}/events`); // API에서 이벤트 데이터 가져옴
-    const formattedEvents = response.data.result.map(event => ({
-      id: event.id, // 이벤트 ID 추가
-      title: `${event.installment_name} - ${event.amount.toLocaleString()}원`,
-      date: event.start_date,
-      extendedProps: {
-        bank_name: event.bank_name,
-        end_date: event.end_date,
-        installment_name: event.installment_name,
-        amount: event.amount,
-        logoUrl: bankLogos[event.bank_name] || 'remainLogo.png', // 로고 URL 매핑
-      },
-    }));
-    setEvents(formattedEvents); // 상태에 저장 (보이게)
+    try {
+      const response = await axiosInstanceAPI.get(`${PATH.SERVER}/api/calendar/events`);
+      const formattedEvents = response.data.result.map(event => ({
+        id: event.id,
+        title: `${event.installment_name} - ${event.amount.toLocaleString()}원`,
+        date: event.start_date,
+        extendedProps: {
+          bank_name: event.bank_name,
+          end_date: event.end_date,
+          installment_name: event.installment_name,
+          amount: event.amount,
+          logoUrl: bankLogos[event.bank_name] || 'remainLogo.png',
+        },
+      }));
+      setEvents(formattedEvents);
+    } catch (error) {
+      console.error('Failed to fetch events:', error.response || error.message);
+      openAlertModal('불러오기 실패', '이벤트를 불러오는 데 실패했습니다.');
+    }
   };
 
   // 이벤트 저장
   const saveEvent = async () => {
+    // 필수 입력 사항 확인
     if (!savingName || !amount || !selectedDate || !endDate || !logoUrl) {
       openAlertModal('작성 불가', '모든 정보를 입력해주세요!');
       return; // 중단
     }
 
+    // 하루 최대 3개 이벤트 제한 확인
     const eventsForDate = events.filter((event) => event.date === selectedDate);
     if (eventsForDate.length >= 3) {
       openAlertModal('작성 불가', '하루에 최대 3개의 이벤트만 추가할 수 있습니다!');
       return;
     }
 
+    const numericAmount = parseInt(amount.replace(/,/g, ''), 10); // 쉼표 제거 후 숫자로 변환
+    const formattedAmount = numericAmount.toLocaleString(); // 쉼표 추가
+    const newEventData = []; // 백엔드로 전송할 데이터 리스트
     const startDate = new Date(selectedDate);
     const finalDate = new Date(endDate);
 
-    const numericAmount = parseInt(amount.replace(/,/g, ''), 10); // 쉼표 제거 후 숫자로 변환
-    const formattedAmount = numericAmount.toLocaleString(); // 쉼표 추가
+    // 반복 일정 데이터 생성
+    while (startDate.getTime() <= finalDate.getTime()) {
+      const eventDate = startDate.toISOString().split('T')[0]; // 날짜 포맷 (yyyy-mm-dd)
 
-    const newEvents = []; // 새로운 이벤트 리스트
-    while (startDate <= finalDate) {
-      newEvents.push({
-        title: `${savingName} - ${formattedAmount}원`,
-        date: startDate.toISOString().split('T')[0],
-        extendedProps: {
-          logoUrl: logoFileName || 'remainLogo.png', // 파일명만 저장
-          amount: numericAmount, // 금액
-        },
+      // 백엔드로 보낼 데이터 생성
+      newEventData.push({
+        installment_name: savingName,
+        bank_name: logoUrl,
+        amount: numericAmount,
+        start_date: eventDate,
+        end_date: eventDate, // 반복 이벤트는 하루 단위로 저장
       });
 
       // 매월 같은 날짜 반복
@@ -229,27 +240,25 @@ const MyCalendarPage = () => {
       }
     }
 
-    // 백엔드에 데이터 저장 (POST 요청)
-    await axios.post(`${API_URL}/save`, {
-      cal_user_id: 1, // 임시 사용자 ID
-      installment_name: savingName,
-      bank_name: logoUrl,
-      amount: parseInt(amount, 10),
-      start_date: selectedDate,
-      end_date: endDate,
-    });
+    try {
+      // 전체 일정 데이터를 한 번에 백엔드로 전송
+      await axiosInstanceAPI.post(`${PATH.SERVER}/api/calendar/save`, newEventData); 
 
-    // 이벤트 목록을 다시 불러와 최신 상태로 반영
-    await fetchEvents(); // 이벤트 저장 후 최신 데이터 불러오기
+      // 이벤트 목록을 다시 불러와 최신 상태로 반영
+      await fetchEvents();
+    } catch (error) {
+      openAlertModal('저장 실패');
+      return; // 중단
+    }
 
     // 입력 필드 및 모달 초기화
     setModalIsOpen(false); // 창닫기
-    setSavingName(''); // 적금명
-    setAmount(''); // 금액
-    setLogoUrl(''); // 은행명
-    setLogoFileName('remainLogo.png'); // 기본 로고 이미지 리셋
-    setSelectedDate('');
-    setEndDate('');
+    setSavingName(''); // 적금명 초기화
+    setAmount(''); // 금액 초기화
+    setLogoUrl(''); // 은행명 초기화
+    setLogoFileName('remainLogo.png'); // 기본 로고 이미지 초기화
+    setSelectedDate(''); // 선택된 시작 날짜 초기화
+    setEndDate(''); // 선택된 종료 날짜 초기화
   };
 
   // 수정 기능
@@ -258,19 +267,27 @@ const MyCalendarPage = () => {
       installment_name: savingName,
       bank_name: logoUrl,
       amount: parseInt(amount.replace(/,/g, ''), 10),
-      start_date: selectedDate,
-      end_date: endDate,
+      end_date: endDate, 
     };
-    await axios.put(`${API_URL}/update/${selectedEventId}`, payload);
-    await fetchEvents();
-    resetModal();
+
+    try {
+      await axiosInstanceAPI.put(`${PATH.SERVER}/api/calendar/update/group/${selectedEventId}`, payload); // 그룹 수정 호출
+      await fetchEvents();
+      resetModal();
+    } catch (error) {
+      openAlertModal('수정 실패', '이벤트 수정 중 문제가 발생했습니다.');
+    }
   };
 
   // 삭제 기능
   const deleteEvent = async () => {
-    await axios.delete(`${API_URL}/delete/${selectedEventId}`);
-    await fetchEvents();
-    resetModal();
+    try {
+      await axiosInstanceAPI.delete(`${PATH.SERVER}/api/calendar/delete/group/${selectedEventId}`); // 그룹 삭제 호출
+      await fetchEvents(); // 업데이트된 이벤트 목록 가져오기
+      resetModal();
+    } catch (error) {
+      openAlertModal('삭제 실패', '이벤트 삭제 중 문제가 발생했습니다.');
+    }
   };
 
   const handleEventClick = (info) => {
@@ -543,7 +560,7 @@ const MyCalendarPage = () => {
         <input
           type="date"
           value={selectedDate}
-          onChange={(e) => setSelectedDate(e.target.value)}
+          disabled
           className={styles.modalInput}
         />
         <label className={styles.modalLabel}>만기일</label>

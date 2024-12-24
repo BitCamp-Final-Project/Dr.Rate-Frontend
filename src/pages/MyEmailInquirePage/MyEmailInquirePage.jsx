@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from "react-router-dom";
 import styles from './MyEmailInquirePage.module.scss';
-import { PATH } from "src/utils/path";
+import { PATH } from 'src/utils/path';
 import MyNav from 'src/components/MyNav'; 
 import rightArrowIcon from 'src/assets/icons/rightArrow.svg';
 

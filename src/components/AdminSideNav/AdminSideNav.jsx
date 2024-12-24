@@ -1,7 +1,7 @@
 import styles from './AdminSideNav.module.scss';
 import React from 'react';
-import { PATH } from "src/utils/path";
-import { useNavigate, useLocation } from "react-router-dom";
+import { PATH } from 'src/utils/path';
+import { useNavigate, useLocation } from 'react-router-dom';
 import adminLogo from 'src/assets/images/adminLogo.png';
 import dashboard from 'src/assets/images/adminDashboard.png';
 import userManagement from 'src/assets/images/adminUserManagement.png';

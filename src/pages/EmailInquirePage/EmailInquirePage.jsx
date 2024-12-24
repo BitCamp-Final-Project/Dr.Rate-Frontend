@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import styles from "./EmailInquirePage.module.scss";
+import React, { useState } from 'react';
+import styles from './EmailInquirePage.module.scss';
 
 const EmailInquirePage = () => {
     const [formData, setFormData] = useState({

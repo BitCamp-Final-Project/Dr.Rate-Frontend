@@ -1,6 +1,6 @@
 /* 상품상세페이지; ProductDetailPage */
 
-import axiosInstanceAPI from "./axiosInstanceAPI.js";
+import axiosInstanceAPI from 'src/apis/axiosInstanceAPI.js';
 import { PATH } from 'src/utils/path';
 
 

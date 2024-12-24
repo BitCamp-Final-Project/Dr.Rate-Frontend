@@ -1,17 +1,27 @@
 /* src/App.jsx */
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import React, { useEffect } from 'react';
 import './App.css';
-import { PATH } from "./utils/path";
-import PageRoutes from "./pages";
-import UserLayout from "./layouts/UserLayout";
-import AdminLayout from "./layouts/AdminLayout";
+import { PATH } from './utils/path';
+import PageRoutes from './pages';
+import UserLayout from './layouts/UserLayout';
+import AdminLayout from './layouts/AdminLayout';
 
 function App() {
+  const location = useLocation();
+
+  useEffect(() => {
+    // URL에 'signIn'이 포함된 경우 Authorization에 dummy 값 설정
+    if (location.pathname.includes('signIn') && !localStorage.getItem('Authorization')) {
+      localStorage.setItem('Authorization', 'dummy');
+    }
+  }, [location.pathname]);
+
   return (
-    <div className="app">
+    <div className='app'>
       <Routes>
         {/* 사용자 페이지 라우트 */}
-        <Route path="/" element={<UserLayout />}>
+        <Route path='/' element={<UserLayout />}>
           <Route index element={<PageRoutes.HomePage />} /> {/* 기본 경로 */}
           <Route path={PATH.SIGN_UP} element={<PageRoutes.SignUpPage />} />
           <Route path={PATH.SIGN_IN} element={<PageRoutes.SignInPage />} />
@@ -41,7 +51,7 @@ function App() {
 
 
         {/* 관리자 페이지 라우트 */}
-        <Route path="/admin" element={<AdminLayout />}>
+        <Route path='/admin' element={<AdminLayout />}>
           <Route index element={<PageRoutes.AdminMainPage />} /> {/* /admin 기본 경로 */}
           <Route path={PATH.ADMIN_MAIN} element={<PageRoutes.AdminMainPage />} />
           <Route path={PATH.ADMIN_USER_LIST} element={<PageRoutes.AdminUserListPage />} />

@@ -1,3 +1,3 @@
-import ProductInsListPage from "./ProductInsListPage";
+import ProductInsListPage from './ProductInsListPage';
 
 export default ProductInsListPage;

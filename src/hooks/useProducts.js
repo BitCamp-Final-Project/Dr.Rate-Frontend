@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { PATH } from "src/utils/path";
+import { PATH } from 'src/utils/path';
 
 const useProducts = (id) => {
     const [products, setProducts] = useState({

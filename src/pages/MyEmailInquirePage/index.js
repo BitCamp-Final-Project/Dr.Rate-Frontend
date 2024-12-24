@@ -1,3 +1,3 @@
-import MyInquiryPage from "./MyInquiryPage";
+import MyInquiryPage from './MyInquiryPage';
 
 export default MyInquiryPage;

@@ -1,3 +1,3 @@
-import MyEditPage from "./MyEditPage";
+import MyEditPage from './MyEditPage';
 
 export default MyEditPage;

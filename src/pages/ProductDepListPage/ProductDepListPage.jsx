@@ -9,8 +9,6 @@ import ConfirmModal from "src/components/Modal/ConfirmModal";
 import useModal from "../../hooks/useModal";
 import { useSession } from 'src/hooks/useSession';
 
-
-
 const ProductDepListPage = () => {
   const [selectedBanks, setSelectedBanks] = useState([]); // 선택된 은행 목록
   const [products, setProducts] = useState([]);
@@ -71,7 +69,6 @@ const ProductDepListPage = () => {
 
   //241217 - 비교담기버튼 클릭
   const handleClick = () => {
-    window.location.href = PATH.PRODUCT_COMPARE;
     //navigate(PATH.PRODUCT_COMPARE);
     //window.location.href = "http://localhost:5173/product/compare/d";
     console.log("비교담기");
@@ -99,7 +96,7 @@ const ProductDepListPage = () => {
   const fetchAllProducts = async (type) => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/product/getAllProducts`
+        `${PATH.SERVER}/api/product/getAllProducts`
       );
       let sortedProducts = response.data;
 
@@ -107,7 +104,6 @@ const ProductDepListPage = () => {
       sortedProducts.sort((a, b) => {
         const aRate = a.options && a.options[0] ? a.options[0].spclRate : 0; // 기본값 0
         const bRate = b.options && b.options[0] ? b.options[0].spclRate : 0; // 기본값 0
-
         if (type === "highRate") {
           // 최고 금리 순으로 정렬
           return bRate - aRate; // 내림차순 정렬
@@ -173,7 +169,6 @@ const ProductDepListPage = () => {
     setCurrentPage(pageNumber);
     handleFilterByBank(); // 페이지 변경 시 필터 재적용
   };
-
   const handleBankChange = (e) => {
     const selectedBank = e.target.value;
     if (selectedBank && !selectedBanks.includes(selectedBank)) {
@@ -181,7 +176,6 @@ const ProductDepListPage = () => {
     } else if (!selectedBank) {
       setSelectedBanks([]); // 선택이 해제될 경우 모든 선택 해제
     }
-    //handleFilterByBank(); // 은행 선택 후 자동으로 필터 적용
   };
   const handleBankRemove = (bank) => {
     setSelectedBanks(selectedBanks.filter((item) => item !== bank)); // 은행 삭제
@@ -289,7 +283,6 @@ const ProductDepListPage = () => {
           <h3>예금</h3>
         </div>
         
-
         {/* 회원/비회원 공통 보이는 필터 */}
         <div className={styles.commonFilter}>
           <div className={styles.bankSelectTitle}>은행</div>
@@ -322,6 +315,8 @@ const ProductDepListPage = () => {
         </div>
         {/* -----------------------------비회원 보이는 배너 ----------------------------- */}
         {/* 241217 - 모달 적용 */}
+        
+        {!isLoggedIn && clearSession && (
         <div className={styles.nonMemberBanner}>
           <div
             className={styles.banner}
@@ -339,7 +334,7 @@ const ProductDepListPage = () => {
                     className={styles.modalLogin}
                     onClick={handleLoginClick}
                   >
-                    로그인
+                &nbsp;<span>로그인</span>
                   </span>
                 </>,
                 handleConfirm,
@@ -348,7 +343,7 @@ const ProductDepListPage = () => {
             }
           >
             <h3>
-              나에게 맞는 예금 상품이 궁금하다면? <span>Click</span>
+              나에게 맞는 예금 상품이 궁금하다면?&nbsp;<span className={styles.click}>Click</span>
             </h3>
           </div>
 
@@ -375,8 +370,10 @@ const ProductDepListPage = () => {
             />
           )}
         </div>
+           )}
+
         {/* ----------------------------- 로그인 후 보이는 필터  -----------------------------*/}
-        
+        {isLoggedIn && (
         <div className={styles.filterTotalDiv}>
           <div className={styles.filterDiv}>
             {/*1216 필터 test 시작 ------------------------*/}
@@ -421,9 +418,10 @@ const ProductDepListPage = () => {
             </div>
           </div>
 
-          {isLoggedIn && (
+          
     <div className={styles.loggedInArea}>
-      로그인 하면 보이는 영역
+      {/* ####################### 로그인 하면 보이는 영역 확인 TEST ################ */}
+    </div>
     </div>
   )}
 
@@ -443,7 +441,7 @@ const ProductDepListPage = () => {
       >
         조회
       </button> */}
-        </div>
+        {/* </div> */}
         {/* 금리순 정렬  */}
         <div className={styles.rateStandard}>
           <span

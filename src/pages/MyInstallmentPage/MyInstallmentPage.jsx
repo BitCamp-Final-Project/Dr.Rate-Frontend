@@ -1,7 +1,7 @@
 import styles from './MyInstallmentPage.module.scss';
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 import React, { useEffect } from 'react';
-import { PATH } from "src/utils/path";
+import { PATH } from 'src/utils/path';
 import MyNav from 'src/components/MyNav';
 import FavoritePanel from 'src/components/FavoritePanel';
 import useMyFavorite from 'src/hooks/useMyFavorite';

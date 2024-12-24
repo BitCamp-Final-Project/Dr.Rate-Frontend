@@ -2,7 +2,7 @@
 
 import styles from './FavoritePanel.module.scss';
 import React, { useState, useEffect } from 'react';
-import { PATH } from "src/utils/path";
+import { PATH } from 'src/utils/path';
 import { useLocation } from 'react-router-dom';
 import { useAtom } from 'jotai';
 import { categoryAtom, allCheckedAtom, setAllCheckedAtom } from 'src/atoms/myFavoriteAtom';

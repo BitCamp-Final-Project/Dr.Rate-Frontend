@@ -1,6 +1,6 @@
 /* 마이페이지 즐겨찾기; MyDepositPage, MyInstallmentPage */
 
-import axiosInstanceAPI from "./axiosInstanceAPI.js";
+import axiosInstanceAPI from 'src/apis/axiosInstanceAPI.js';
 import { PATH } from 'src/utils/path';
 
 

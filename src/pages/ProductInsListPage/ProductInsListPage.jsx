@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import styles from "./ProductInsListPage.module.scss";
+import React, { useState } from 'react';
+import styles from './ProductInsListPage.module.scss';
 
 const ProductInsListPage = () => {
   const [selectedBanks, setSelectedBanks] = useState([]); // 선택된 은행 목록

@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './AdminEmailInquireListPage.module.scss';
-import { useNavigate } from "react-router-dom";
-import { PATH } from "src/utils/path";
+import { useNavigate } from 'react-router-dom';
+import { PATH } from 'src/utils/path';
 
 const AdminEmailInquireListPage = () => {
     const navigate = useNavigate();

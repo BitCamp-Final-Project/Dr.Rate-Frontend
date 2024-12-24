@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';  // useNavigate 추가
-import AlertModal from '../../components/modal/AlertModal'; // AlertModal import
+import AlertModal from 'src/components/modal/AlertModal'; // AlertModal import
 import styles from './SignInPage.module.scss';
 
 import googleIcon from 'src/assets/socialIcons/Google-Icon.png';
 import kakaoIcon from 'src/assets/socialIcons/Kakao-Icon.png';
 import naverIcon from 'src/assets/socialIcons/Naver-Icon.png';
-import { PATH } from '../../utils/path';
+import { PATH } from 'src/utils/path';
 
 const SignInPage = () => {
     const navigate = useNavigate();  // navigate 훅 사용
@@ -23,13 +23,13 @@ const SignInPage = () => {
 
     // 로그인 후 JWT 처리 함수
     const handleOAuthLogin = async (provider) => {
-        window.location.href=`http://localhost:8080/login/${provider}`;
+        window.location.href=`${PATH.SERVER}/api/signIn/${provider}`;
     };
 
     // 일반 로그인 처리 함수
     const handleLogin = async () => {
         try {
-            const response = await axios.post('http://localhost:8080/api/login', {
+            const response = await axios.post(`${PATH.SERVER}/api/signIn`, {
                 user_id: userId,
                 user_pwd: userPwd,
             });

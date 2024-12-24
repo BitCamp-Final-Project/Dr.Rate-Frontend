@@ -1,9 +1,9 @@
 import styles from './MyInfoPage.module.scss';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axiosInstanceAPI from '../../apis/axiosInstanceAPI';
+import axiosInstanceAPI from 'src/apis/axiosInstanceAPI';
 import MyNav from 'src/components/MyNav';
-import { PATH } from '../../utils/path';
+import { PATH } from 'src/utils/path';
 
 const MyInfoPage = () => {
     const navigate = useNavigate();

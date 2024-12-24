@@ -39,28 +39,12 @@
                 color: var(--white);
                 border: 0 ;
             }
+            button:hover {
+                background-color: var(--main1);
+            }
         }
     }
-
-
-
-
-    
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+} //myInfoSection (메인)
 
 /* ====================================== 가로 1000px 이하 ====================================== */
 @media (max-width: 1000px) {

@@ -1,12 +1,19 @@
 import {  useNavigate } from 'react-router-dom';
 import styles from './AdminHeader.module.scss';
 import React, { useEffect, useState } from 'react';
-import { PATH } from "src/utils/path";
+import { PATH } from 'src/utils/path';
+import { useSession } from 'src/hooks/useSession';
+
 
 const AdminHeader = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const navigate = useNavigate();
+    const { isLoggedIn, clearSession } = useSession();
 
+    const handleLogout = () => {
+        clearSession();
+        navigate(PATH.HOME); 
+    };
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
@@ -38,7 +45,7 @@ const AdminHeader = () => {
                     </button>
                 </div>
 
-                <div className={styles.adminHeaderLogout}>로그아웃</div>
+                <div className={styles.adminHeaderLogout} onClick={handleLogout} >로그아웃</div>
             </div>
 
             {/* 메뉴가 열렸을 때 SideNav 내용 렌더링 */}
@@ -70,7 +77,7 @@ const AdminHeader = () => {
                                     navigate(PATH.ADMIN_EMAIL_INQUIRE_LIST);
                                     setIsMenuOpen(false);
                                 }}>이메일 문의</li>
-                                <li>로그아웃</li>
+                                <li onClick={handleLogout}>로그아웃</li>
                                 <li onClick={() => {
                                     navigate(PATH.ADMIN_INQUIRE_LIST);
                                     setIsMenuOpen(false);

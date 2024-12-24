@@ -1,3 +1,3 @@
-import MyDepositPage from "./MyDepositPage";
+import MyDepositPage from './MyDepositPage';
 
 export default MyDepositPage;

@@ -1,3 +1,3 @@
-import ProductComparePage  from "./ProductComparePage";
+import ProductComparePage  from './ProductComparePage';
 
 export default ProductComparePage;

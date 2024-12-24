@@ -1,11 +1,11 @@
-import { Outlet } from "react-router-dom";
-import { useAtom } from "jotai";
-import { isAdminAtom } from "/src/atoms/auth";
-import AdminSideNav from "/src/components/AdminSideNav/AdminSideNav";
-import AdminHeader from "/src/components/AdminHeader/AdminHeader";
-import useModal from "src/hooks/useModal";
-import AlertModal from "src/components/Modal/AlertModal";
-import { useEffect } from "react";
+import { Outlet } from 'react-router-dom';
+import { useAtom } from 'jotai';
+import { useEffect } from 'react';
+import { isAdminAtom } from 'src/atoms/auth';
+import AdminSideNav from 'src/components/AdminSideNav/AdminSideNav';
+import AdminHeader from 'src/components/AdminHeader/AdminHeader';
+import useModal from 'src/hooks/useModal';
+import AlertModal from 'src/components/Modal/AlertModal';
 
 const AdminLayout = () => {
     const [isAdmin] = useAtom(isAdminAtom);

@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import styles from './MyNav.module.scss';
-import { useNavigate, useLocation } from "react-router-dom";
-import { PATH } from "src/utils/path";
+import { useNavigate, useLocation } from 'react-router-dom';
+import { PATH } from 'src/utils/path';
 import downArrowIcon from 'src/assets/icons/downDetailArrow.svg';
 import useDropdown from 'src/hooks/useDropdown';
 

@@ -1,3 +1,3 @@
-import AdminEmailInquirePage from "./AdminEmailInquirePage"
+import AdminEmailInquirePage from './AdminEmailInquirePage';
 
 export default AdminEmailInquirePage;

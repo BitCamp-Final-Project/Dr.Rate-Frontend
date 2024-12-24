@@ -1,10 +1,8 @@
 /* src/hooks/useFavorite.js */
 /* 상품상세페이지; ProductDetailPage */
 
-// import { useAtom } from 'jotai';
-// import { favoriteAtom } from '../atoms/favoriteAtom';
 import { useState, useEffect } from 'react';
-import { checkFavorite, addFavorite, cancelFavorite } from '../apis/favoriteAPI';
+import { checkFavorite, addFavorite, cancelFavorite } from 'src/apis/favoriteAPI';
 
 export const useFavorite = (prdId) => {
   const [isFavorite, setIsFavorite] = useState(false);

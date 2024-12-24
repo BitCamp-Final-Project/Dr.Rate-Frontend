@@ -136,12 +136,20 @@
     }
 
     .errorText {
-        color: red;
-        font-size: 12px;
-        margin-top: 5px; /* 유효성 메시지 아래 마진 추가 */
-        align-self: flex-start; /* 왼쪽 정렬 */
-        width: 100%; /* 오류 메시지가 부모 너비에 맞게 표시되도록 설정 */
-    }
+            color: red; /* 기본 오류 메시지는 빨간색 */
+            font-size: 12px;
+            margin-top: 5px;
+            align-self: flex-start;
+            width: 100%;
+        }
+
+        .errorText.success {
+            color: var(--main2); /* 성공적인 아이디 메시지는 main2 색상 */
+        }
+
+        .errorText.failure {
+            color: red; /* 실패 메시지는 빨간색 */
+        }
     button {
             background-color: var(--main2);
             color: var(--white);

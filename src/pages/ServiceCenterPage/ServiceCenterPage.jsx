@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import styles from "./ServiceCenterPage.module.scss";
+import React, { useState } from 'react';
+import styles from './ServiceCenterPage.module.scss';
 import {  useNavigate } from 'react-router-dom';
-import { PATH } from "src/utils/path";
+import { PATH } from 'src/utils/path';
 
 const categories = [
   { id: "all", name: "전체" },

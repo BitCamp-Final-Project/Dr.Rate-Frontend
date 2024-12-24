@@ -1,7 +1,7 @@
 // src/apis/axiosInstanceAPI.js
 
 import axios from 'axios';
-import { PATH } from "../utils/path"; // 경로 import
+import { PATH } from 'src/utils/path'; // 경로 import
 
 // axios 인스턴스 생성
 const api = axios.create({
@@ -16,69 +16,70 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     // 토큰을 가져옴
-    const token = localStorage.getItem('Authorization');
+    let token = localStorage.getItem('Authorization'); // 토큰 가져오기
 
-    // 토큰이 있으면 헤더에 추가
-    if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`;
-      console.warn('토큰이 담겼습니다.');
-    } else {
-      console.warn('토큰이 없습니다!');
+    // 토큰이 존재하고, "Bearer " 접두사가 없는 경우만 추가
+    if (token && !token.startsWith('Bearer ')) {
+      token = `Bearer ${token}`;
     }
 
-    // 헤더에 토큰이 잘 추가되었는지 확인
-    console.log('Request Headers:', config.headers);
+    // 헤더에 토큰 추가
+    if (token) {
+      config.headers['Authorization'] = token;
+    }
 
-    return config;  // 요청 계속 진행
+    return config; // 요청 계속 진행
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error) // 요청 에러 처리
 );
+
 
 // Response 인터셉터
 api.interceptors.response.use(
-  (response) => {
-    return response;  // 응답을 그대로 반환
-  },
+  (response) => response, // 정상 응답은 그대로 반환
   async (error) => {
-    // 응답 에러가 발생하고, 토큰 만료가 원인인 경우
-    if (error.response && error.response.data.code === "SESSION403") {  // "SESSION403" 코드 확인
-      const originalRequest = error.config;  // 원래 요청 정보
+    const originalRequest = error.config; // 원래 요청 정보
 
-      // 이미 토큰 재발급 요청 중인 경우 재시도 하지 않도록 설정
+    // 403 에러 처리
+    if (error.response?.status === 403) {
+      console.log("403 에러 발생, 원래 요청:", originalRequest);
+
+      // 재시도 방지 플래그 확인
       if (originalRequest._retry) {
-        return Promise.reject(error);  // 재시도 방지
+        console.warn("이미 재시도한 요청입니다.");
+        return Promise.reject(error);
       }
 
-      // 토큰 재발급 요청을 보내기 전에 _retry를 true로 설정
+      // 재시도 플래그 설정
       originalRequest._retry = true;
 
       try {
-        // Redis에 저장된 accessToken을 서버로 요청해서 비교하고, 새로운 accessToken 발급 받기
+        // 현재 토큰 가져오기
         const currentAccessToken = localStorage.getItem('Authorization');
-
-        const response = await api.post('/api/auth/refresh', { access_token: currentAccessToken });
-
-        // 새로운 액세스 토큰을 받아온 후
-        const newAccessToken = response.data.token;
-        localStorage.setItem('Authorization', newAccessToken); // 새로운 토큰을 저장
-
-        // 새로운 토큰을 요청 헤더에 추가하고, 원래의 요청을 재전송
+        // 토큰 갱신 요청
+        const response = await api.post('/api/reissue', { access_token: `Bearer ${currentAccessToken}` });
+        // 새로운 토큰 확인
+        const newAccessToken = response.data.result;
+        // 새로운 토큰 저장
+        localStorage.setItem('Authorization', `${newAccessToken}`);
+        // 원래 요청에 새로운 토큰 설정
         originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
 
-        // 원래 요청을 다시 보냄
+        // 원래 요청 재전송
         return api(originalRequest);
       } catch (refreshError) {
-        console.error("토큰 갱신 실패", refreshError);
-        // 토큰 갱신 실패 시 처리 (예: 로그인 페이지로 이동)
+        console.error("토큰 갱신 실패:", refreshError);
+
+        // 갱신 실패 시 로그인 페이지로 이동
         window.location.href = PATH.SIGN_IN;
         return Promise.reject(refreshError);
       }
     }
 
-    return Promise.reject(error);  // 다른 에러는 그대로 반환
+    console.error("응답 에러:", error); // 다른 에러 로그 출력
+    return Promise.reject(error);
   }
 );
+
 
 export default api;

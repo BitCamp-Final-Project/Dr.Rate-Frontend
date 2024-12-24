@@ -1,3 +1,3 @@
-import MyWithdrawPage from "./MyWithdrawPage";
+import MyWithdrawPage from './MyWithdrawPage';
 
 export default MyWithdrawPage;
