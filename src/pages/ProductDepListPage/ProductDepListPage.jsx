@@ -10,8 +10,8 @@ import useModal from "../../hooks/useModal";
 import { useSession } from 'src/hooks/useSession';
 
 const ProductDepListPage = () => {
-  const [selectedBanks, setSelectedBanks] = useState([]); // 선택된 은행 목록
   const [products, setProducts] = useState([]);
+  const [selectedBanks, setSelectedBanks] = useState([]); // 선택된 은행 목록
   const [allProducts, setAllProducts] = useState([]);
   const [sortType, setSortType] = useState("highRate"); // 초기값: 최고금리순
   const [active, setActive] = useState(""); //단리 디폴트
@@ -24,8 +24,7 @@ const ProductDepListPage = () => {
   const navigate = useNavigate();
   const { isLoggedIn, clearSession } = useSession();
  
-
-  const paginateProducts = (products) => {
+    const paginateProducts = (products) => {
     const indexOfLastProduct = currentPage * itemsPerPage;
     const indexOfFirstProduct = indexOfLastProduct - itemsPerPage;
     return products.slice(indexOfFirstProduct, indexOfLastProduct);
@@ -58,9 +57,9 @@ const ProductDepListPage = () => {
 
   //241218 전체 상품 리스트
   useEffect(() => {
-    //fetchProductsByCtg("d"); // 초기에는 "d" 카테고리 데이터 가져오기
     fetchAllProducts(); // 모든 제품 가져오기
   }, []); // 빈 배열로 한 번만 호출
+
 
   //241219 전체 상품 리스트
   useEffect(() => {
@@ -74,20 +73,7 @@ const ProductDepListPage = () => {
     console.log("비교담기");
   };
 
-  // 카테고리별 상품을 가져오고 필터 적용
-  // const fetchProductsByCtg = async (ctg) => {
-  //   try {
-  //     const response = await axios.get(`http://localhost:8080/product/getProductsByCtg/${ctg}`);
-  //     const filtered = response.data.filter((product) => {
-  //       return product.prdName.includes("예금") && product.option && product.option[0].rateTypeKo === active;
-  //     });
-  //     setProducts(filtered); // 필터링된 예금 제품만 상태에 반영
-  //   } catch (error) {
-  //     console.error("Error fetching products by category:", error);
-  //   }
-  // };
-
-  // 241217 필터 반영항목 테스트
+  // 241217 필터 반영항목 테스트 - 최고금리, 기본금리 ----------------------------------------------------------------------------
   useEffect(() => {
     console.log("콘솔 : products 필터로그:", products);
   }, [products]);
@@ -123,6 +109,8 @@ const ProductDepListPage = () => {
     } catch (error) {
       console.error("Error fetching products:", error);
     }
+
+    
   };
 
   // 최고 금리로 정렬
@@ -148,17 +136,38 @@ const ProductDepListPage = () => {
 
       // 대면/비대면 필터링
       const meetsJoinType = joinType
-        ? joinType === "대면"
-          ? product.product.joinWay &&
-            product.product.joinWay.includes("영업점")
-          : true
-        : true;
+      ? joinType === "대면"
+        ? product.product.joinWay &&
+          product.product.joinWay.includes("영업점")
+        : product.product.joinWay &&
+          (product.product.joinWay.includes("스마트폰") ||
+            product.product.joinWay.includes("인터넷"))
+      : true;
 
-      // 예금 이름을 포함하고, rateType 및 joinType 조건을 모두 만족해야 함
+        // const meetsJoinType = joinType
+        // ? joinType === "대면"
+        //   ? product.product.joinWay &&
+        //     product.product.joinWay.includes("영업점")
+        //   : joinType === "비대면"
+        //   ? product.product.joinWay &&
+        //     !product.product.joinWay.includes("영업점")
+        //   : true
+        // : true;
+
+
+      //241226 은행 선택 포함
+        const meetsBankFilter =
+        selectedBanks.length > 0
+          ? selectedBanks.some((bank) =>
+              product.product.bankName.includes(bank)
+            )
+          : true; 
+      // 예금 이름을 포함하고, rateType 및 joinTypp 필터 적용완
       return (
         product.product.prdName.includes("예금") &&
         meetsRateType &&
-        meetsJoinType
+        meetsJoinType &&
+        meetsBankFilter
       );
     });
   };
@@ -180,7 +189,7 @@ const ProductDepListPage = () => {
   const handleBankRemove = (bank) => {
     setSelectedBanks(selectedBanks.filter((item) => item !== bank)); // 은행 삭제
   };
-  //1219----------------==-=-=-=-=-=========================================================================
+  //1219 은행선택 const ----------------------------------------------------------------------------------
 
   const handleFilterByBank = () => {
     let filteredProducts;
@@ -208,11 +217,9 @@ const ProductDepListPage = () => {
     setProducts(paginatedProducts); // 현재 페이지에 맞는 상품만 설정
 
     // 페이지 번호 업데이트
+    const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
     setPageNumbers(
-      Array.from(
-        { length: Math.ceil(filteredProducts.length / itemsPerPage) },
-        (_, i) => i + 1
-      )
+      Array.from({ length: Math.min(totalPages, 5) }, (_, i) => i + 1) // 최대 5개의 페이지 번호만 표시
     );
   };
 
@@ -228,12 +235,6 @@ const ProductDepListPage = () => {
     setJoinType(value);
     console.log("가입 방식 변경:", value);
   };
-
-  // const handleRateClick = () => {
-  //   console.log("금리 높은 순 버튼 클릭"); // 테스트용
-  //   // 추가 로직 구현
-  // };
-
   //모달 const
   const {
     isConfirmOpen,
@@ -380,20 +381,24 @@ const ProductDepListPage = () => {
             <div className={styles.filterDiv}>
               <h4>이자 계산 방식</h4>
               <div className={styles.toggle}>
-                <button
-                  className={`${active === "단리" ? styles.active : ""}`}
-                  data-value="단리"
-                  onClick={() => handleFilterChange("단리")}
-                >
-                  단리
-                </button>
-                <button
-                  className={`${active === "복리" ? styles.active : ""}`}
-                  data-value="복리"
-                  onClick={() => handleFilterChange("복리")}
-                >
-                  복리
-                </button>
+              <button
+            className={`${active === "단리" ? styles.active : ""}`}
+            data-value="단리"
+            onClick={() =>
+              handleFilterChange(active === "단리" ? null : "단리") 
+            }
+          >
+            단리
+          </button>
+          <button
+            className={`${active === "복리" ? styles.active : ""}`}
+            data-value="복리"
+            onClick={() =>
+              handleFilterChange(active === "복리" ? null : "복리") 
+            }
+          >
+            복리
+          </button>
               </div>
             </div>
 
@@ -403,14 +408,18 @@ const ProductDepListPage = () => {
                 <button
                   className={`${joinType === "대면" ? styles.active : ""}`}
                   data-value="대면"
-                  onClick={() => handleJoinTypeChange("대면")}
+                  onClick={() =>
+                    handleJoinTypeChange(joinType === "대면" ? null : "대면") 
+                  }
                 >
                   대면
                 </button>
                 <button
                   className={`${joinType === "비대면" ? styles.active : ""}`}
                   data-value="비대면"
-                  onClick={() => handleJoinTypeChange("비대면")}
+                  onClick={() =>
+                    handleJoinTypeChange(joinType  === "비대면" ? null : "비대면") 
+                  }
                 >
                   비대면
                 </button>
