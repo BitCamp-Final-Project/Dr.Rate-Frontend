@@ -10,12 +10,12 @@ import AdminLayout from './layouts/AdminLayout';
 function App() {
   const location = useLocation();
 
-  useEffect(() => {
-    // URL에 'signIn'이 포함된 경우 Authorization에 dummy 값 설정
-    if (location.pathname.includes('signIn') && !localStorage.getItem('Authorization')) {
-      localStorage.setItem('Authorization', 'dummy');
-    }
-  }, [location.pathname]);
+  // useEffect(() => {
+  //   // URL에 'signIn'이 포함된 경우 Authorization에 dummy 값 설정
+  //   if (location.pathname.includes('signIn') && !localStorage.getItem('Authorization')) {
+  //     localStorage.setItem('Authorization', 'dummy');
+  //   }
+  // }, [location.pathname]);
 
   return (
     <div className='app'>

@@ -133,36 +133,67 @@ const AdminInquirePage = () => {
     // WebSocket 연결 및 STOMP 클라이언트 설정
     useEffect(() => {
         if (roomId) {
-            const socket = new WebSocket(`${PATH.SERVER}/ws`);
-            const client = Stomp.over(socket);
-
-            client.connect(
-                { Authorization: `Bearer ${token}` },
-                () => {
-                    console.log("WebSocket connected");
-                    client.subscribe(`/sub/chat/room/${roomId}`, (message) => {
-                        const newMessage = JSON.parse(message.body);
-                        setMessages((prevMessages) => [...prevMessages, newMessage]);
-                    });
-                },
-                (error) => {
-                    console.error("WebSocket connection error:", error);
-                    setTimeout(connectWebSocket, 5000); 
-                }
-            );
-
-            setStompClient(client);
-
-            return () => {
-                if (client) {
-                    console.log('Disconnecting WebSocket');
-                    client.disconnect(() => {
-                        console.log('WebSocket disconnected');
-                    }, {});
-                }
+            let retries = 1000; // Kafka 토픽 준비를 위한 최대 재시도 횟수
+    
+            const connectWebSocket = () => {
+                const socket = new WebSocket(`${PATH.SERVER}/ws`);
+                const client = Stomp.over(socket);
+    
+                client.connect(
+                    { Authorization: `Bearer ${token}` },
+                    () => {
+                        console.log("WebSocket connected");
+    
+                        const checkTopicAndSubscribe = async () => {
+                            while (retries > 0) {
+                                try {
+                                    // Kafka 토픽 상태 확인
+                                    const response = await api.get(`/api/topic/check/chat-room-${roomId}`);
+                                    if (response.data.success==="OK") {
+                                        console.log("Kafka topic ready, subscribing...");
+                                        client.subscribe(`/sub/chat/room/${roomId}`, (message) => {
+                                            const newMessage = JSON.parse(message.body);
+                                            setMessages((prevMessages) => [...prevMessages, newMessage]);
+                                        });
+                                        break; // 구독 성공 시 반복 종료
+                                    }
+                                } catch (error) {
+                                    console.error("Error checking Kafka topic:", error);
+                                }
+    
+                                retries--;
+                                await new Promise((resolve) => setTimeout(resolve, 1000)); // 1초 대기 후 재시도
+                            }
+    
+                            if (retries === 0) {
+                                console.error("Failed to subscribe to Kafka topic after multiple retries");
+                            }
+                        };
+    
+                        checkTopicAndSubscribe();
+                    },
+                    (error) => {
+                        console.error("WebSocket connection error:", error);
+                        setTimeout(connectWebSocket, 5000); // 5초 후 재시도
+                    }
+                );
+    
+                setStompClient(client);
+    
+                return () => {
+                    if (client) {
+                        console.log("Disconnecting WebSocket");
+                        client.disconnect(() => {
+                            console.log("WebSocket disconnected");
+                        }, {});
+                    }
+                };
             };
+    
+            connectWebSocket();
         }
     }, [roomId, token]);
+    
 
     // 메세지 불러옴(페이징 처리)
     const fetchMessage = async (roomId, currentPage) => {

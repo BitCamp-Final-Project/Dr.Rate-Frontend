@@ -8,16 +8,20 @@ export const useSession = () => {
 
   // 로그인 상태 업데이트
   const updateSession = (token) => {
-    if (token) {
+    if (token && token !== 'undefined') { // 토큰이 있고 'undefined'가 아닌 경우
       localStorage.setItem('Authorization', token); // 로컬 스토리지에 토큰 저장
       setIsLoggedIn(true); // 상태를 true로 설정
     } else {
       const savedToken = localStorage.getItem('Authorization'); // 저장된 토큰 확인
-      if (savedToken) {
-        setIsLoggedIn(true); // 토큰이 있으면 상태를 true로 업데이트
+      if (savedToken && savedToken !== 'undefined') { // 저장된 토큰이 있고 'undefined'가 아닌 경우
+        setIsLoggedIn(true); // 상태를 true로 업데이트
+      } else {
+        setIsLoggedIn(false); // 저장된 토큰이 없거나 'undefined'인 경우 false로 설정
       }
     }
+    console.log('로그인 상태 : ', isLoggedIn);
   };
+
 
   // 로그아웃 처리
   const clearSession = () => {
@@ -27,9 +31,3 @@ export const useSession = () => {
 
   return { isLoggedIn, updateSession, clearSession };
 };
-
-
-
-
-
-

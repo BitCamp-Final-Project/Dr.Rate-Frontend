@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';  // useNavigate 추가
-import AlertModal from 'src/components/modal/AlertModal'; // AlertModal import
+import AlertModal from 'src/components/Modal/AlertModal'; // AlertModal import
 import styles from './SignInPage.module.scss';
 
 import googleIcon from 'src/assets/socialIcons/Google-Icon.png';

@@ -11,7 +11,6 @@
         gap: 5px;
 
         .inquireTypeItem {
-            display: flex;
             align-items: center;
 
             .rightArrowIcon {
@@ -31,16 +30,20 @@
 
 
     .userInquireBody {
-        width: 60%;
+        width: 100%;
         height: 80vh;
         padding: 0;
+        margin: 0;
 
         .userInquireHeader {
+            padding: 0 10px;
             display: flex;
             flex-direction: row;
             justify-content: space-between;
+            align-items: center;
             width: 100%;
-            margin-top: 10px;
+            margin: 10px auto;
+            max-width: 550px;
 
             .userInquireTitleArea {
                 display: flex;
@@ -85,27 +88,24 @@
             display: flex;
             justify-content: center;
             width: 100%;
+            max-width: 550px;
             height: 85%;
+            margin: 0 auto;
 
             .phoneContainer {
-                width: 100%; // 일반적인 핸드폰 너비
-                // width: 50%;
-                height: 100%; // 핸드폰 높이
-                border-radius: 30px; // 둥근 모서리
+                width: 100%; 
+                height: 100%; 
+                border-radius: 30px; 
                 padding: 7px;
                 display: flex;
                 justify-content: center;
                 align-items: center;
                 flex-direction: column;
-
-                /* 수정 */
                 border: 2px dashed transparent;
-                /* 기본 테두리 */
                 transition: border-color 0.3s ease-in-out;
 
                 .phoneContainer.dragging {
                     border-color: #007bff;
-                    /* 드래그 중인 경우 테두리 강조 */
                 }
 
                 .dragOverlay {
@@ -137,26 +137,20 @@
 
                     &::-webkit-scrollbar {
                         width: 8px;
-                        /* 스크롤바 너비 */
                     }
 
                     &::-webkit-scrollbar-thumb {
                         background-color: rgba(193, 193, 193, 0.5);
-                        /* 스크롤바 색상 */
                         border-radius: 20px;
-                        /* 스크롤바 둥글게 */
                     }
 
                     &::-webkit-scrollbar-track {
                         background-color: rgba(245, 245, 245, 0.3);
-                        /* 트랙 색상 */
                         border-radius: 10px;
-                        /* 트랙 둥글게 */
                     }
 
                     &::-webkit-scrollbar-button {
                         display: none;
-                        /* 상단/하단 삼각형 버튼 숨기기 */
                     }
 
                     .chatMessage {
@@ -187,15 +181,10 @@
 
                         .messageTimestamp {
                             font-size: 0.8rem;
-                            /* 작은 크기로 표시 */
                             color: rgba(255, 255, 255, 0.6);
-                            /* 흰색 투명도 적용 */
                             margin-left: 8px;
-                            /* 메시지와 간격 추가 */
                             display: inline-block;
-                            /* 인라인 블록으로 표시 */
                             vertical-align: bottom;
-                            /* 메시지와 하단 정렬 */
                         }
                     }
 
@@ -221,15 +210,10 @@
 
                         .messageTimestamp {
                             font-size: 0.8rem;
-                            /* 작은 크기로 표시 */
                             color: rgba(255, 255, 255, 0.6);
-                            /* 흰색 투명도 적용 */
                             margin-right: 8px;
-                            /* 메시지와 간격 추가 */
                             display: inline-block;
-                            /* 인라인 블록으로 표시 */
                             vertical-align: bottom;
-                            /* 메시지와 하단 정렬 */
                         }
                     }
 
@@ -239,18 +223,12 @@
                 .phoneScreenInput {
                     width: 100%;
                     height: 10%;
-                    /* 고정된 높이로 설정 */
                     background-color: #EFEFEF;
                     border-top: 1px solid #ccc;
-                    /* 입력창 상단 테두리 */
                     display: flex;
-                    /* 내용 정렬을 위한 플렉스 컨테이너 */
                     align-items: center;
-                    /* 세로 가운데 정렬 */
                     padding: 0 10px;
-                    /* 좌우 여백 */
                     box-sizing: border-box;
-                    /* 패딩 포함 크기 계산 */
                     border-radius: 0px 0px 20px 20px;
                     justify-content: center;
 
@@ -260,19 +238,15 @@
                         align-items: center;
                         justify-content: center;
                         width: 40px;
-                        /* 버튼 크기 */
                         height: 40px;
                         background-color: #fff;
                         border-radius: 50%;
-                        /* 원형 버튼 */
                         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
                         cursor: pointer;
                         margin-right: 10px;
-                        /* 입력 필드와 간격 */
 
                         .fileInput {
                             display: none;
-                            /* 실제 파일 업로드 필드는 숨김 */
                         }
 
                         .fileUploadButton {
@@ -300,7 +274,6 @@
                         input {
                             border: none;
                             outline: none;
-                            /* 포커스 시 테두리도 제거하려면 추가 */
                             padding: 10px;
                             width: 85%;
                             height: 100%;
@@ -308,18 +281,12 @@
 
                         .sendButton {
                             flex-shrink: 0;
-                            /* 버튼 크기가 축소되지 않도록 설정 */
                             width: 15%;
-                            /* 버튼 너비를 명확히 설정 */
                             height: 80%;
-                            /* 버튼 높이 설정 (부모 높이 대비) */
                             background-image: url('../../assets/icons/sendBtn.png');
                             background-size: contain;
-                            /* 이미지 크기를 요소에 맞춤 */
                             background-repeat: no-repeat;
-                            /* 반복 제거 */
                             background-position: center;
-                            /* 중앙 배치 */
                             background-color: transparent;
                             border: none;
                             cursor: pointer;
@@ -337,24 +304,6 @@
 }
 
 
-@media(max-width: 1320px) {
-
-    .userInquireBody {
-        width: 488px;
-    }
-
-    .phoneContainer {
-        width: 375px;
-    }
-
-}
-
-
-
-
-
-
-
 
 
 
@@ -370,9 +319,99 @@
 
 
 
+
+/* ====================================== 가로 600px 이하 ====================================== */
+@media (max-width: 600px) {
+    .my1v1InquireSection {
+        padding: 20px 10px;
+        padding-top: 60px;
+
+        .userInquireBody {
+    
+            .userInquireHeader {
+                margin: 0 auto;
+                max-width: 400px;
+                padding: 0 10px;
+            }
+
+            .userInquireChat {
+                max-width: 400px;
+            }
+        }
+
+    }
+
+}
+
+
+/* ====================================== 가로 500px 이하 ====================================== */
+@media (max-width: 500px) {
+    .my1v1InquireSection {
+
+        .userInquireBody {
+            .userInquireHeader {
+                max-width: 340px;
+            }
+
+            .userInquireChat {
+                max-width: 340px;
+            }
+        }
+
+    }
+
+}
+
+
+
 /* ====================================== 가로 430px 이하 ====================================== */
 @media (max-width: 430px) {
     .my1v1InquireSection {
+        padding: 0;
         padding-top: 50px;
+
+        .inquireTypeDiv {
+            font-size: 15px;
+            margin: 10px 0;
+        }
+
+        .userInquireBody {
+            .userInquireHeader {
+                font-size: 14px;
+
+                .userInquireTitleArea {
+                    .userInquireTitle {
+                        height: 40px;
+                    }                    
+                }                
+
+                .userInquireQuitArea {
+                    width: 100px;
+                    height: 100%;
+
+                    .userInquireQuitBtn {
+                        height: 34px;
+                        width: 90%;
+                        border-radius: 26px;
+                    }
+                }
+            }
+
+            .userInquireChat {
+                .phoneContainer {
+                    .phoneScreen {
+                        .phoneScreenInput {
+                            .phoneScreenInputArea {
+                                font-size: 14px;
+
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            
+        }
     }
 }

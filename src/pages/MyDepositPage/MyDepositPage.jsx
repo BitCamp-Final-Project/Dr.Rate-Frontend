@@ -2,6 +2,9 @@ import styles from './MyDepositPage.module.scss';
 import { useNavigate } from "react-router-dom";
 import React, { useEffect } from 'react';
 import { PATH } from 'src/utils/path';
+import { useSession } from 'src/hooks/useSession';
+import ConfirmModal from 'src/components/Modal/ConfirmModal';
+import useModal from 'src/hooks/useModal';
 import MyNav from 'src/components/MyNav';
 import FavoritePanel from 'src/components/FavoritePanel';
 import useMyFavorite from 'src/hooks/useMyFavorite';
@@ -9,27 +12,77 @@ import rightArrowIcon from 'src/assets/icons/rightArrow.svg';
 import spinner from 'src/assets/icons/spinner.gif';
 
 
+
 const MyDepositPage = () => {
     const navigate = useNavigate();
 
+    const { isLoggedIn, clearSession } = useSession();
+
+    const {
+        isConfirmOpen,
+        openConfirmModal,
+        closeConfirmModal,
+        confirmContent
+    } = useModal();
+
+    // const handleOpenConfirmModal = () => {
+    //     openConfirmModal(
+    //         '로그인 페이지로 이동하시겠습니까?',
+    //         '로그인 후 마이 페이지에 접근할 수 있어요!',
+    //         handleConfirm,
+    //         handleCancel
+    //     );
+    // };
+
+    const handleConfirm = () => {
+        navigate(PATH.SIGN_IN);
+        closeConfirmModal();
+    };
+
+    const handleCancel = () => {
+        navigate(PATH.HOME);
+        closeConfirmModal();
+    };
+
     const { favoriteData, fetchFavorites, loading, error, individualChecked, handleIndividualCheck } = useMyFavorite();
 
+    // useEffect(() => {
+    //     fetchFavorites();
+    // }, [fetchFavorites]);
+
     useEffect(() => {
-        fetchFavorites();
-    }, [fetchFavorites]);
+        if (!isLoggedIn) {
+            openConfirmModal(
+                '로그인 페이지로 이동하시겠습니까?',
+                '로그인 후 마이 페이지에 접근할 수 있어요!',
+                handleConfirm,
+                handleCancel
+            );
+        } else {
+            fetchFavorites(); // 로그인된 경우에만 즐겨찾기 데이터를 가져옴
+        }
+    }, [isLoggedIn, fetchFavorites]); // isLoggedIn이 변경될 때 실행
 
 
 
     return (
         <main>
             <MyNav />
+                <ConfirmModal
+                    isOpen={isConfirmOpen}
+                    closeModal={closeConfirmModal}
+                    title={confirmContent.title}
+                    message={confirmContent.message}
+                    onConfirm={confirmContent.onConfirm}
+                    onCancel={confirmContent.onCancel}
+                />
 
             <section className={styles.favoriteSection}>
                 {/* FavoritePanel은 항상 렌더링 */}
                 <FavoritePanel favoriteDataLength={favoriteData.length} />
 
                 {/* 상태에 따라 내부 내용만 바뀜 */}
-                {loading && 
+                {loading &&
                     <div className={styles.errorDiv}>
                         <img className={styles.loadingImg} src={spinner} alt="loading" />
                     </div>}

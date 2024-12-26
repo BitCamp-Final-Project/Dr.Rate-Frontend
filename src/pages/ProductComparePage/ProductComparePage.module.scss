@@ -1,100 +1,216 @@
+// Title - 추가하기 버튼 
 .history{
-    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     padding: 20px 0;
+    font-size: 15px;
     border-bottom: 1px solid var(--black);
 
-    img{
-        margin: 0 15px;
+    .historyDiv{
+        display: flex;
+        align-items: center;
+        
+        img{
+            margin: 0 15px;
+        }
+    
+        .historyAction{
+            font-weight: 700;
+            cursor: pointer;
+        }
     }
 
-    .historyAction{
-        font-weight: 700;
+    // 상품 추가하기 
+    .addComparePrd{
+        width: 200px; height: 35px; line-height: 35px;
+        text-align: center;
+        border-radius: 10px;
+        background: var(--main2); color: var(--white);
         cursor: pointer;
+    
+        &:hover{
+            background: var(--main1);
+        }
     }
 }
 
+
+// 바교상품
 .compareDiv{
     display: flex;
     flex-direction: row;
     justify-content: center;
     gap: 30px;
 
+    padding: 30px 0;
     max-width: 100%;
-    padding: 30px 0 ;
 
+    // 상품 있음 
     .comparePrd{
-        flex: 0 0 auto;
+        position: relative;
         width: 30%;
-        background: var(--bg3);
         text-align: center;
+        background: var(--bg1);
 
-        .deleteBtnX{
-            text-align: center;
-            width: 30px; height: 30px; line-height: 30px;
-            background: #555;
-            color: var(--white);
-            cursor: pointer;
+        // 삭제버튼
+        .dtnDiv{
+            text-align:-webkit-right;
 
-            &:hover{
-                background: var(--bg2);
+            .deleteBtnX{
+                width: 30px; height: 30px; line-height: 30px;
+                text-align: center;
+                background: #555; color: var(--white);
+                cursor: pointer;
+    
+                &:hover{
+                    background: var(--bg2);
+                }
             }
         }
 
+        // 로고
         .bankLogo{
             width: 80px; height: 80px;
         }
 
+        // 상품 정보 
         .compareTitle, .rate, .compareDetailTable{
-            margin: 30px;
+            margin: 20px;
         }
 
+        // 상품 정보 - 1 
         .compareTitle{
             text-align: left;
+            cursor: pointer;
 
             .bankName, .prdName{
-                line-height: 1.8em;
                 display: block;
                 margin-bottom: 10px;
+                line-height: 1.8em;
             }
+            
+            .bankName{
+                font-size: 12px;
+            }
+
+            &:hover {
+                text-decoration: underline;
+                color: var(--main2);
+            }
+            
         }
 
+        // 상품 정보 - 2
         .rate{
+            margin: 20px 10px;
             text-align: right;
 
             .spclRate, .basicRate{
-                display: block;
-                margin-bottom: 10px;
+                margin: 0px 5px;
             }
 
             .spclRate{
                 font-size: 18px; font-weight: 700;
                 color: var(--red1);
             }
+
+            .basicRate{
+                font-size: 12px;
+            }
         }
 
+
+        // 상품 상세 정보 
         .compareDetailTable{
+            margin-bottom: 100px;
             text-align: left;
             font-size: 14px;
 
-            p{
+            .compareDetailDiv{
+                display: flex;
+                flex-direction: row;
                 width: 100%;
 
                 span{
                     padding: 10px;
                     display: inline-block;
+
+                    &:nth-child(2){
+                        color: var(--main2);
+                    }
                 }
 
-                span:nth-child(2){
-                    color: var(--main2);
+
+                // 옵션 
+                .allSelect{
+                    display: flex;
+                    align-items: center;
+                    position: relative;
+
+                    width: 80%;
+                    font-size: 12px;
+                    
+                    // 보여지는 옵션 
+                    .selectOptions{
+                        padding: 5px;
+                        width: 100%;
+                        text-align: center;
+                        border: 1px solid var(--divider-border);
+                        background: var(--white); color: var(--main2);
+                        transition: 0.4s;
+                        cursor: pointer;
+                    }
+                    
+                    // 클릭했을 때 
+                    .selectedItem{
+                        background: var(--main2); color: var(--white);
+                        transition: 0.4s;
+                    }
+                    
+                    // 옵션 토글 
+                    .optionItemDiv{
+                        position: absolute;
+                        width: 100%;
+                        top: 80%;
+                        left: 0;
+                        z-index: 999;
+                        
+                        .optionItem{
+                            padding: 5px;
+                            width: 100%;
+                            font-size: 12px; text-align: center;
+                            border: 1px solid var(--divider-border); border-top: 0;
+                            background: var(--white);
+                            cursor: pointer;
+        
+                            &:hover{
+                                background: var(--divider-border);
+                            }
+
+                            &:nth-child(1){
+                                border-top: 1px solid var(--divider-border);
+                            }
+                        }
+
+                        .selected{
+                            background: var(--admin-body);
+                        }
+                    }
                 }
             }
-
         }
 
+        // 버튼
         .btn{
             display: flex;
             justify-content: space-around;
+
+            position: absolute ;
+            bottom: 0;
+            
             margin: 30px 0;
+            width: 100%;
             
             .deleteBtn, .joinBtn{
                 flex: 0 1 40%;
@@ -107,13 +223,13 @@
                 background: var(--bg2);
 
                 &:hover{
-
+                    background: var(--divider-border);
                 }
             }
-            .joinBtn{
-                background: var(--main2);
-                color: var(--white);
 
+            .joinBtn{
+                background: var(--main2); color: var(--white);
+                
                 &:hover{
                     background: var(--main1);
                 }
@@ -122,90 +238,116 @@
         }
     }
 
-    .noneComparePrd{
+    // 상품 없음 - > 1
+    .noncomparePrd{
         display: flex;
-        justify-content: center; /* 가로 중앙 정렬 */
-        align-items: center; 
-        background: none;
+        align-items: center;
+        flex-direction: column;
+        justify-content: center;
 
-        .addComparePrd{
-            width: 100px; height: 100px; line-height: 100px;
-            border: 2px solid var(--divider-border); border-radius: 30px;
-            font-size: 30px; color: var(--divider-border);
-            cursor: pointer;
-
-            &:hover{
-                background: var(--divider-border);
-                color: var(--white);
-            }
-        }
+        width: 30%;
+        border: 1px dotted var(--divider-border);
     }
+
+    // 상품 없음 - 0
+    .noncomparePrdAll{
+        width: 30%;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+    }    
 }
 
+
+/* 반응형 1200px */
 @media (max-width: 1200px) {
     .comparePrd {
-        flex: 1 1 45%; /* For screens smaller than 1200px, show 2 items per row */
+        flex: 1 1 45%;
     }
 }
 
+/* 반응형 768px */
 @media (max-width: 768px) {
     .compareSection{
         width: 90%;
-    }
 
-    .compareDiv {
-        display: flex;
-        flex-direction: column;
-
-        .comparePrd{
-           width: 100%;
-
-           .bankLogo{
-            width: 50px; height: 50px;
-           }
-
-           .compareTitle{
-            margin: 10px 10px 10px 20px;
-            font-size: 15px;
-            display: inline-block;
-           }
-
-           .rate{
+        // 상품 비교
+        .compareDiv {
             display: flex;
-            flex-direction: row;
-            justify-content: center;
-            gap: 15px;
-            margin: 20px 0 10px 0;
+            flex-direction: column;
+            
+            .comparePrd{
+                width: 100%;
 
-            .spclRate, .basicRate{
-                font-size: 15px !important;
+                .bankLogo{
+                    width: 50px; height: 50px;
+                }
+                
+                .compareTitle{
+                    margin: 10px 10px 10px 20px;
+                    font-size: 15px;
+                    display: inline-block;
+                }
+        
+                .rate{
+                    display: flex;
+                    justify-content: center;
+                    gap: 15px;
+                    margin: 20px 0;
+                    
+                    .spclRate, .basicRate{
+                        font-size: 15px !important;
+                    }
+                }
+           
+                // 상품 상세 정보 
+                .compareDetailTable{
+                    margin: 0 10px;
+                }
+            
+                // 버튼 
+                .btn{
+                    display: block;
+                    position: relative;
+                    margin: 20px 0 !important;
+
+                    .deleteBtn{
+                        display: none;
+                    }
+                
+                    .joinBtn{
+                        width: 100% !important; 
+                    }
+                }
             }
-           }
+        }
 
-           .compareDetailTable{
-                margin: 0 10px;
-           }
+        
+        // 상품 없음 - > 1 
+        .noncomparePrd {
+            width: 100% !important;
+            padding: 50px;
+        }
 
-           .btn{
-                margin: 10px;
-                display: block;
-               .deleteBtn{
-                display: none;
-               }
-
-               .joinBtn{
-                width: 100% !important; 
-               }
-           }
-
+        // 상품 없음 - 0
+        .noncomparePrdAll {
+            width: 100% !important;
+            padding: 50px;
         }
     }
+}
 
-    .history {
-        font-size: 16px; 
-    }
 
-    .noneComparePrd {
-        margin-top: 30px;
+/* 반응형 1200px */
+@media (max-width: 480px) {
+
+    .addComparePrd{
+        display: block;
+        position: absolute;
+        bottom: 0; left: 0;
+        width: 100% !important; height: 50px !important; line-height: 50px !important;
+        border-radius: 0 !important;
+        z-index: 999;
     }
 }

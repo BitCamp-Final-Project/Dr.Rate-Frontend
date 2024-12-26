@@ -61,7 +61,7 @@ const Footer = () => {
                         <div><img src={footerDivider} alt="푸터 세로 구분선" className={styles.footerDivider} /></div>
                         <div>
                             <div className={ styles.contactTitle }>H.P.</div>
-                            <div className={ styles.contactContent }>http://localhost:5173</div>
+                            <div className={ styles.contactContent }>http://dr-rate.store</div>
                         </div>
                     </div>{/* // <div className={ styles.corContact }> */}
 

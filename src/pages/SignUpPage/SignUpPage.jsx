@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import AlertModal from 'src/components/modal/AlertModal'; // AlertModal import
+import AlertModal from 'src/components/Modal/AlertModal'; // AlertModal import
 import styles from './SignUpPage.module.scss';
 import { PATH } from 'src/utils/path.js';
 

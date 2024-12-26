@@ -213,11 +213,75 @@
 }
 
 
+/* ====================================== 가로 600px 이하 ====================================== */
+@media (max-width: 600px) {
+
+    .myEmailInquireSection {
+        padding: 20px 10px;
+        padding-top: 60px;
+    }
+}
+
 
 
 /* ====================================== 가로 430px 이하 ====================================== */
 @media (max-width: 430px) {
     .myEmailInquireSection {
+        padding: 0;
         padding-top: 50px;
+
+        
+        .inquireTypeDiv {
+            font-size: 15px;
+            margin: 10px 0;
+        }
+
+
+        .inquireListDiv {
+            margin: 20px auto;
+            font-size: 15px;
+
+            .inquireList {
+                padding: 10px;
+
+                .listContentDiv {
+                    font-size: 15px;
+
+                    .contentQ {
+                        margin-right: 7px;
+                        
+                    }
+                    
+                    .contentDiv {
+                        .inquireTitleDiv {
+                            .inquireTitle {
+                                font-size: 15px;
+                            }
+                        }
+                    }
+
+                    .listAnswerDiv {
+                        padding: 10px;
+                    }
+                }
+
+                .listAnswerDiv {
+                    .answerDiv {
+                        .answerTitleDiv {
+                            .answerTitle {
+                                font-size: 15px;
+                            }
+                        }
+                    }
+                }
+
+                .btnDiv {
+                    .deleteBtn {
+                        height: 34px;
+                        font-size: 14px;
+                    }
+                }
+            }
+        }
     }
 }
