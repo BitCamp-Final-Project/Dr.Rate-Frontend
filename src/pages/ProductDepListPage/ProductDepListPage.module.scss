@@ -11,7 +11,7 @@
   .commonFilter {
     border: 1px solid var(--bg2);
     margin-top: 10px;
-    height: 60px;
+    height: 60px; //자동으로 300px까지늘어나게
     display: flex;
     flex-wrap: wrap;
     font-family: Arial, sans-serif;
@@ -95,8 +95,10 @@
       color: var(--main1);
       font-weight: 700;
       cursor: pointer;
+      margin-left: 5px; 
       border-bottom: 2px solid var(--main1); /* 밑줄 설정 */
       padding-bottom: 2px; /* 밑줄과 텍스트 간격 조정 */
+   
   }
     .modalLogin{
       //color: var(--main1);
@@ -131,7 +133,7 @@
 
       // 회원 필터; 은행 선택 박스
     .filterTotalDiv {
-      border: 1px solid gray;
+      border: 1px solid var(--divider-border);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -462,7 +464,7 @@
     .commonFilter {
       padding: 10px;
       .bankSelectDiv {
-        width: 100%;
+        width: 80%;
       }
 
       .selectedBanksContainer {

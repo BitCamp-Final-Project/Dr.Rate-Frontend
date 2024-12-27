@@ -19,6 +19,7 @@ const ProductDepListPage = () => {
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
   const [itemsPerPage, setItemsPerPage] = useState(5); // 페이지당 항목 수
   const [pageNumbers, setPageNumbers] = useState([]);
+  const [selectValue, setSelectValue] = useState(""); // 셀렉트 박스 값 관리
   
   
   const navigate = useNavigate();
@@ -170,6 +171,7 @@ const ProductDepListPage = () => {
         meetsBankFilter
       );
     });
+    
   };
 
   //-----------------------------------------------------------------------------------------------
@@ -187,7 +189,16 @@ const ProductDepListPage = () => {
     }
   };
   const handleBankRemove = (bank) => {
-    setSelectedBanks(selectedBanks.filter((item) => item !== bank)); // 은행 삭제
+    const updatedBanks = selectedBanks.filter((item) => item !== bank);
+    setSelectedBanks(updatedBanks);
+  
+    if (updatedBanks.length === 0) {
+      setSelectValue(""); // 선택된 은행이 없으면 기본값으로 초기화
+    }
+    
+    //기존 setSelectedBanks(selectedBanks.filter((item) => item !== bank)); // 은행 삭제
+
+    
   };
   //1219 은행선택 const ----------------------------------------------------------------------------------
 
@@ -288,8 +299,8 @@ const ProductDepListPage = () => {
         <div className={styles.commonFilter}>
           <div className={styles.bankSelectTitle}>은행</div>
           <div className={styles.bankSelectDiv}>
-            <select className={styles.bankSelect} onChange={handleBankChange}>
-              <option value="">은행 선택</option>
+            <select className={styles.bankSelect} value={selectValue} onChange={handleBankChange} >
+            <option value="" disabled>은행 선택</option>
               <option value="국민은행">KB국민 은행</option>
               <option value="농협은행">NH농협 은행</option>
               <option value="신한은행">신한 은행</option>
@@ -374,7 +385,7 @@ const ProductDepListPage = () => {
            )}
 
         {/* ----------------------------- 로그인 후 보이는 필터  -----------------------------*/}
-        {isLoggedIn && (
+        {isLoggedIn || (
         <div className={styles.filterTotalDiv}>
           <div className={styles.filterDiv}>
             {/*1216 필터 test 시작 ------------------------*/}
@@ -484,9 +495,9 @@ const ProductDepListPage = () => {
         {/* -----------------------------리스트 ------------------------------------------------*/}
         {/** db 연동 상품 리스트  */}
         <div className={styles.productListDiv}>
-          {allProducts.length === 0 ? (
-            <p>표시할 데이터가 없습니다.</p>
-          ) : (
+        { filterProducts(allProducts).length === 0 ? (
+       <p> 조건에 맞는 상품이 없습니다.</p>
+  ) : (
             products.map((product, index) => (
               <div
                 key={index}
