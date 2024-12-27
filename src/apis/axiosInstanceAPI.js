@@ -58,8 +58,10 @@ api.interceptors.response.use(
         const currentAccessToken = localStorage.getItem('Authorization');
         // 토큰 갱신 요청
         const response = await api.post('/api/reissue', { access_token: `Bearer ${currentAccessToken}` });
+        console.log("리이슈 요청");
         // 새로운 토큰 확인
         const newAccessToken = response.data.result;
+        console.log("새로운 토큰 = " + newAccessToken);
         // 새로운 토큰 저장
         localStorage.setItem('Authorization', `${newAccessToken}`);
         // 원래 요청에 새로운 토큰 설정

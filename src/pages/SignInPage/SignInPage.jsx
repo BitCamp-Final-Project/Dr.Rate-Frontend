@@ -4,6 +4,9 @@ import { useNavigate } from 'react-router-dom';  // useNavigate 추가
 import AlertModal from 'src/components/Modal/AlertModal'; // AlertModal import
 import styles from './SignInPage.module.scss';
 
+import { useAtom } from 'jotai';
+import { userData } from '../../atoms/userData';
+
 import googleIcon from 'src/assets/socialIcons/Google-Icon.png';
 import kakaoIcon from 'src/assets/socialIcons/Kakao-Icon.png';
 import naverIcon from 'src/assets/socialIcons/Naver-Icon.png';
@@ -11,6 +14,7 @@ import { PATH } from 'src/utils/path';
 
 const SignInPage = () => {
     const navigate = useNavigate();  // navigate 훅 사용
+    const [, setMyData] = useAtom(userData); // Jotai Atom 사용
 
     // 모달 상태 관리
     const [showModal, setShowModal] = useState(false);
@@ -38,6 +42,11 @@ const SignInPage = () => {
             if (token) {
                 console.log("Received JWT:", token);
                 localStorage.setItem("accessToken", token); // JWT를 localStorage에 저장
+                //조타이 추가
+                const response = await axiosInstanceAPI.post(`${PATH.SERVER}/api/myInfo`);
+                setMyData(response.data.result);  // 데이터 업데이트
+                console.log("데이터 가져옴");
+
                 window.location.href = `${PATH.HOME}`; // 메인 페이지로 이동
             } else {
                 // 로그인 실패 시 모달 띄우기

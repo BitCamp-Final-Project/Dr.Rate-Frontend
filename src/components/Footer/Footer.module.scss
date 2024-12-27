@@ -128,7 +128,39 @@ footer {
 
 @media (max-width: 1100px) {
     .footerContainer {
+        .footerInfo,
+        .footerIcon {
+            width: 100%;  
+        }
+
+        .footerInfo {
+
+            .corContact {
+                flex-direction: column;
+                align-items: baseline !important;
+                margin: 20px;
+
+                .footerDivider {
+                    display: none;
+                    width: 0;
+                    height: 0;
+                }
+            }
+        }
+
+        .footerIcon {
+            padding: 10px 0;
+            justify-content: flex-start;
+        }
+    }
+}
+
+
+@media (max-width: 780px) {
+    .footerContainer {
         flex-direction: column;
+        
+        width: 100% !important;
 
         .footerInfo,
         .footerIcon {
@@ -136,6 +168,10 @@ footer {
         }
 
         .footerInfo {
+            
+            padding: 0 20px;
+            width: 100% !important;
+
             .corContact {
                 flex-direction: column;
                 align-items: flex-start;
@@ -151,23 +187,51 @@ footer {
         }
 
         .footerIcon {
+            margin-top: 20px;
             padding: 10px 0;
             justify-content: flex-start;
+        }
+
+        .corRight{
+            margin: 20px 0;
         }
     }
 }
 
 
-@media (max-width: 600px) {
-    footer {
-        padding: 20px 3%;
-    }
-}
-
-
-@media (max-width: 380px) {
-    .footerContainer .footerInfo .corAddress {
-        width: 340px;
+@media (max-width: 480px) {
+    .footerContainer {
+        width: 100% !important;
         gap: 7px;
+
+        .footerInfo{
+            padding: 0 20px;
+            width: 100% !important;
+
+            .corName {
+                width: 100% !important;
+    
+            }
+            
+            .corAddress {
+                width: 100% !important;
+            }
+
+            .corContact{
+                margin: 0;
+                align-items: baseline !important;
+            }
+
+            .corRight{
+                margin: 20px 0;
+                gap: 25px !important;
+
+                .rightText{
+                    padding: 0 !important;
+                    width: max-content !important;
+                }
+            }
+        }
+
     }
 }

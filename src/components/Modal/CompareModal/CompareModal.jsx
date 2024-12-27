@@ -337,16 +337,19 @@ const CompareModal = ({isOpen, closeModal, title, onCancel, listLength, ctg}) =>
                             alt={`${product.product.bankName} Logo`} 
                         />
 
-                        <div className={styles.productText}>
-                            <span className={styles.bankName}>{product.product.bankName}</span>
-                            <span className={styles.productName}>{product.product.prdName}</span>
-                        </div>
-                    </div>
+                        <div className={styles.productTextDiv}>
+                            <div className={styles.productText}>
+                                <span className={styles.bankName}>{product.product.bankName}</span>
+                                <span className={styles.productName}>{product.product.prdName}</span>
+                            </div>
 
-                    {/* 금리 */}
-                    <div className={styles.rate}>
-                        <span className={styles.spclrate}>최고금리 {product.options[product.index].spclRate}%</span>
-                        <span className={styles.basicRate}>기본금리 {product.options[product.index].basicRate}%</span>
+                            {/* 금리 */}
+                            <div className={styles.rate}>
+                                <span className={styles.spclrate}>최고금리 {product.options[product.index].spclRate}%</span>
+                                <span className={styles.basicRate}>기본금리 {product.options[product.index].basicRate}%</span>
+                            </div>
+                        </div>
+
                     </div>
 
                 </div>

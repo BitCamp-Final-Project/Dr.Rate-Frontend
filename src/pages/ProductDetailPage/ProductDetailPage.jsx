@@ -17,6 +17,7 @@ import { atom, useAtom } from 'jotai';
 import { PATH } from "src/utils/path";
 
 import { useSession } from 'src/hooks/useSession';
+import CompareNav from 'src/components/CompareNav/CompareNav';
 
 
 /* Jotai 상태 관리 */
@@ -86,7 +87,7 @@ const ProductDetailPage = () => {
         } else {
             const confirmMessage = (
                 <>
-                    로그인 후 이자계산기를 사용할 수 있어요! <br />
+                    로그인 후 이자계산기를 사용할 수 있습니다.<br />
                     <span>이미 회원이세요?</span> 
                     <span className={styles.arrow}>&gt;&gt;</span>
                     <span 
@@ -110,6 +111,10 @@ const ProductDetailPage = () => {
     // 화살표시 토글
     const handleToggle2 = () => {
         setIsOpenResult((prev) => !prev);
+
+        if (!isLoggedIn) {
+            setIsOpenResult(false);
+        }
     }
 
     // 숫자 변형 #,### 
@@ -151,14 +156,62 @@ const ProductDetailPage = () => {
         closeConfirmModal();
     };
 
+    /* Confirm Modal 확인 클릭 시 */
+    const handleConfirm2 = () => {
+        if(product.ctg === 'd'){
+            navigate(`${PATH.PRODUCT_COMPARE}/d`);
+        }else if(product.ctg === 'i'){
+            navigate(`${PATH.PRODUCT_COMPARE}/i`);
+        }
+        closeConfirmModal();
+    };
+
     /* Confirm Modal 취소 클릭 시 */
     const handleCancel = () => {
         closeConfirmModal();
     };
 
 
+
+
     /* 비교 담기 */
-    
+
+    const addComparePrd = () => {
+        let compareList;
+
+        if(product.ctg === "d"){
+            compareList = JSON.parse(localStorage.getItem('depCompareList')) || [];
+        } else if(product.ctg === "i"){
+            compareList = JSON.parse(localStorage.getItem('insCompareList')) || [];
+        }
+
+        const duplicateProduct = compareList.some(comproduct => comproduct.product.id === product.id);
+
+        if (duplicateProduct) {
+            openConfirmModal('이미 추가된 상품입니다', '비교하기로 이동하시겠습니까?', handleConfirm2, handleCancel);
+            return;
+        }
+
+        if (compareList.length >= 3) {
+            openConfirmModal('상품 비교 한도 초과', '비교할 수 있는 상품은 최대 3개입니다', handleConfirm2, handleCancel);
+            return;
+        }
+
+        const addProduct = {
+            index: i,
+            options: options,
+            product: product
+        };
+
+        compareList.push(addProduct);
+        if(product.ctg === "d"){
+            localStorage.setItem('depCompareList', JSON.stringify(compareList));
+        } else if(product.ctg === "i"){
+            localStorage.setItem('insCompareList', JSON.stringify(compareList));
+        }
+
+        openConfirmModal('비교 상품이 등록되었습니다', '비교하기로 이동하시겠습니까?', handleConfirm2, handleCancel);
+    }
 
 
 
@@ -180,28 +233,47 @@ const ProductDetailPage = () => {
 
     /* 즐겨찾기 버튼 핸들러 */
     const handleFavoriteClick = async () => {
-        setFavoriteClicked(true); // 버튼 클릭 여부 설정
-        try {
-            await toggleFavorite(prdId);
+        if (isLoggedIn) {
+            setFavoriteClicked(true); // 버튼 클릭 여부 설정
+            try {
+                await toggleFavorite(prdId);
 
-            // 즐겨찾기 등록 시 Confirm 모달 표시
-            if (!isFavorite) { 
-                openConfirmModal(
-                    '즐겨찾기가 등록되었습니다.',
-                    '마이페이지로 이동하시겠습니까?',
-                    handleFavoriteConfirm,
-                    handleFavoriteCancel
+                // 즐겨찾기 등록 시 Confirm 모달 표시
+                if (!isFavorite) { 
+                    openConfirmModal(
+                        '즐겨찾기가 등록되었습니다.',
+                        '마이페이지로 이동하시겠습니까?',
+                        handleFavoriteConfirm,
+                        handleFavoriteCancel
+                    );
+                } else {
+                    // 즐겨찾기 취소 시 Alert Modal 표시
+                    openAlertModal('즐겨찾기가 삭제되었습니다.');
+
+                }
+
+
+            } catch (error) {
+                openAlertModal(
+                    '오류가 발생했습니다.',
+                    error.message
                 );
-            } else {
-                // 즐겨찾기 취소 시 Alert Modal 표시
-                openAlertModal('즐겨찾기가 삭제되었습니다.');
-
             }
-        } catch (error) {
-            openAlertModal(
-                '오류가 발생했습니다.',
-                error.message
+        } else {
+            const confirmMessage2 = (
+                <>
+                    로그인 후 즐겨찾기를 사용할 수 있습니다.<br/>
+                    <span>이미 회원이세요?</span> 
+                    <span className={styles.arrow}>&gt;&gt;</span>
+                    <span 
+                        className={styles.modalLogin} 
+                        onClick={handleLoginClick}>
+                        로그인
+                    </span>
+                </>
             );
+            openConfirmModal('회원가입 하시겠습니까?', confirmMessage2, handleConfirm, handleCancel);
+
         }
     };
 
@@ -257,6 +329,8 @@ const ProductDetailPage = () => {
                 duration={3000} // 3초 후 이동
             />
 
+            <CompareNav ctg={product.ctg} handleCancel={handleCancel}/>
+
                 {/* 상품 제목 및 상단 정보 */}
                 <h3 className={styles.title}>{product.ctg === 'i' ? '적금' : '예금'}</h3>
 
@@ -309,7 +383,7 @@ const ProductDetailPage = () => {
                     >
                         <span className={`${styles.heart} ${isFavorite ? styles.active : ''}`}>&hearts;</span> 즐겨찾기
                     </button>
-                    <button className={styles.intobtn}>비교담기</button>
+                    <button className={styles.intobtn} onClick={addComparePrd}>비교담기</button>
                     <button className={styles.gotoHomePage} onClick={() =>window.open(product?.url, '_blank')}>가입하기</button>
                 </div>
                 

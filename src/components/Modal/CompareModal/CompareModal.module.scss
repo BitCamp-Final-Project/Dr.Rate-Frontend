@@ -195,43 +195,55 @@
           display: flex;
           flex-direction: row;
           align-items: center;
-
+          width: 100%;
+          
           .bankLogo{
             width: 30px; height: 30px;
             margin-right: 10px;
           }
-
-          .productText {
+          
+          .productTextDiv{
             display: flex;
             flex-direction: row;
             align-items: center;
-            gap: 10px;
+            justify-content: space-between;
+            width: 100%;
 
-            .bankName, .productName {
-              display: block;
-              font-size: 14px;
-              margin-left: 10px;
+            .productText {
+              display: flex;
+              flex-direction: row;
+              align-items: center;
+              gap: 10px;
+              
+  
+              .bankName, .productName {
+                display: block;
+                font-size: 14px;
+                margin-left: 10px;
+              }
+  
+              .bankName{
+                width: 150px;
+              }
             }
+            
+            // 금리 
+            .rate{
+              display: flex;
+              flex-direction: column;
+              align-items: flex-end;
+              gap: 5px;
+              font-size: 12px;
+              margin-left: auto;
 
-            .bankName{
-              width: 150px;
+              .spclrate{
+                color: var(--red1);
+              }
             }
           }
         }
         
 
-        // 금리 
-        .rate{
-          display: flex;
-          flex-direction: column;
-          align-items: flex-end;
-          gap: 5px;
-          font-size: 12px;
-
-          .spclrate{
-            color: var(--red1);
-          }
-        }
 
         &:hover{
           background: var(--bg2);
@@ -378,12 +390,6 @@
   .bankList {
       width: 80%;
   }
-
-  // 제목
-  .bankName{
-    font-size: 10px !important;
-  }
-  
   // 상품 추가 
   .addPrd{
     overflow-x: auto;
@@ -393,10 +399,57 @@
       height: 35px;
   
       .productText{
-        width: max-content;
+        width: max-content !important;
       }
     }
   }
+
+  .productbox{
+
+    .bankLogo{
+      float: left;
+    }
+
+    .productTextDiv{
+      margin-left: 20px;
+      flex-direction: column !important;
+      
+      .productText{
+
+        margin-right: auto;
+    
+        .bankName{
+          width: max-content !important;
+          font-size: 10px !important;
+
+        }
+
+        .productName{
+          font-weight: 700;
+          margin-left: 10px !important;
+        }
+    
+        .productName{
+          font-size: 10px !important;
+        }
+      }
+      
+      .rate{
+        margin-top: 10px;
+        width: 100%;
+        flex-direction: row !important;
+        margin-right: auto !important;
+
+        .basicRate{
+          margin-left: 5px;
+        }
+      }
+    }
+    
+  }
+
+  
+
 }
 
 /* 반응형 높이 750px */

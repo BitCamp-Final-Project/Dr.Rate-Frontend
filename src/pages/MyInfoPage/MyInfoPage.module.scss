@@ -26,6 +26,7 @@
             .myData {
                 width: 28rem;
                 padding-bottom: 2px;
+                font-weight: normal;
             }
         }
         .buttonBox {
@@ -46,19 +47,41 @@
     }
 } //myInfoSection (메인)
 
-/* ====================================== 가로 1000px 이하 ====================================== */
-@media (max-width: 1000px) {
+
+/* ====================================== 가로 750px 이하 ====================================== */
+@media (max-width: 750px) {
     .myInfoSection {
-        padding-top: 60px;
+        width: 75%;
+        margin: 0 auto; 
+        padding-top: 100px; 
+    }
+
+    .myInfo {
+        .tagBox {
+            flex-direction: column; /* 세로정렬 */
+            align-items: flex-start; /* 왼쪽 정렬 */
+            margin-top: 5rem; /* 각 항목 사이의 여백 */
+        }
+        .buttonBox {
+            justify-content: center;
+        }
     }
 }
-
-
-
 
 /* ====================================== 가로 430px 이하 ====================================== */
 @media (max-width: 430px) {
     .myInfoSection{
         padding-top: 50px;
+    }
+
+    .myInfo {
+        .tagBox {
+            flex-direction: column;
+            align-items: flex-start;
+            margin-top: 1.5rem;
+        }
+        .buttonBox {
+            justify-content: center;
+        }
     }
 }

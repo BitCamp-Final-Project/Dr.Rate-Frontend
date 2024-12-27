@@ -5,11 +5,11 @@ import FullCalendar from '@fullcalendar/react'; // React용 FullCalendar
 import dayGridPlugin from '@fullcalendar/daygrid'; // 월간 보기
 import interactionPlugin from '@fullcalendar/interaction'; // 날짜 클릭
 import Modal from 'react-modal'; // 모달
-import axiosInstanceAPI from '../../apis/axiosInstanceAPI'; // axiosInstanceAPI 
+import axiosInstanceAPI from 'src/apis/axiosInstanceAPI'; // axiosInstanceAPI 
 
 import MyNav from 'src/components/MyNav'; //MyNav
 import AlertModal from 'src/components/Modal/AlertModal/AlertModal'; //AlertModal
-import ConfirmModal from 'src/components/Modal/ConfirmModal/ConfirmModal';
+import ConfirmModal from 'src/components/Modal/ConfirmModal/ConfirmModal'; //ConfirmModal
 import useModal from 'src/hooks/useModal'; //useModal 훅 추가
 
 import { PATH } from 'src/utils/path'; //경로
@@ -18,33 +18,18 @@ import rightArrowIcon from 'src/assets/icons/rightArrow.svg';
 
 import styles from './MyCalendarPage.module.scss';
 
-const API_URL = `${PATH.SERVER}/api/calendar`;  //백 서버
+const API_URL = `${PATH.SERVER}/api/calendar`;  // API URL
 
 // Jotai 상태 관리
-const eventsAtom = atom([]); // 이벤트 목록 저장
+const eventsAtom = atom([]); // 전체 이벤트 리스트
 const modalIsOpenAtom = atom(false); // 모달 열림 상태
-const selectedDateAtom = atom(''); // 선택된 날짜 저장
-const savingNameAtom = atom(''); // 상품 이름 저장
-const amountAtom = atom(''); // 금액 저장
-const logoUrlAtom = atom(''); // 로고 URL 저장
-const endDateAtom = atom(''); // 만기일 저장
-const isSmallScreenAtom = atom(window.innerWidth <= 1000); //화면 크기 변경 시 상태 업데이트
+const selectedDateAtom = atom(''); // 선택된 날짜 
+const savingNameAtom = atom(''); // 적금명
+const amountAtom = atom(''); // 금액
+const logoUrlAtom = atom(''); // 로고 URL 
+const endDateAtom = atom(''); // 만기일 
+const isSmallScreenAtom = atom(window.innerWidth <= 1000); //화면 크기 변경
 const expandedDatesAtom = atom({}); // 특정 날짜의 이벤트가 펼쳐졌는지 관리
-
-// 은행 로고 URL 매핑
-const bankLogos = {
-  국민은행: "kookminLogo.png",
-  신한은행: "shinhanLogo.png",
-  하나은행: "hanaLogo.png",
-  우리은행: "wooriLogo.png",
-  카카오뱅크: "kakaoLogo.png",
-  농협은행: "nonghyupLogo.png",
-  토스뱅크: "tossLogo.png",
-  전북은행: "jeonbukLogo.png",
-  기업은행: "ibkLogo.png",
-  부산은행: "bnkLogo.png",
-  대구은행: "imbankLogo.png",
-};
 
 // 모달 초기 설정
 Modal.setAppElement('#root');
@@ -54,7 +39,6 @@ const MyCalendarPage = () => {
   const [modalIsOpen, setModalIsOpen] = useAtom(modalIsOpenAtom); // 모달열림
   const [savingName, setSavingName] = useAtom(savingNameAtom); // 적금명
   const [logoUrl, setLogoUrl] = useAtom(logoUrlAtom); // 은행로고URL
-  const [logoFileName, setLogoFileName] = useState('remainLogo.png'); // 로고 파일명 저장
   const [endDate, setEndDate] = useAtom(endDateAtom); // 만기일
   const [amount, setAmount] = useAtom(amountAtom); // 금액
   const [events, setEvents] = useAtom(eventsAtom); // 이벤트목록
@@ -64,33 +48,30 @@ const MyCalendarPage = () => {
   const [selectedEventId, setSelectedEventId] = useState(null); // 이벤트ID 저장
   const [isConfirmOpen, setIsConfirmOpen] = useState(false); // ConfirmModal 열림 상태
   const [confirmContent, setConfirmContent] = useState({}); // ConfirmModal의 제목, 메시지, onConfirm 함수
+  const [banks, setBanks] = useState([]); // 은행 목록
+  const [selectedBank, setSelectedBank] = useState(''); // 선택된 은행명
+  const [products, setProducts] = useState([]); // 선택된 은행의 적금명 저장
 
   // Confirm 모달
   const openConfirmModal = (title, message, onConfirm) => {
     setConfirmContent({ title, message, onConfirm });
-    setIsConfirmOpen(true);
+    setIsConfirmOpen(true); //열기
   };
 
   const closeConfirmModal = () => {
-    setIsConfirmOpen(false);
+    setIsConfirmOpen(false); //닫기
   };
 
   // 캘린더 참조
-  const calendarRef = useRef(null); 
+  const calendarRef = useRef(null);
 
   //useModal 훅
   const { isAlertOpen, openAlertModal, closeAlertModal, alertContent } = useModal();
 
-  // 오늘 날짜로 이동
-  const goToToday = () => {
-    const calendarApi = calendarRef.current.getApi();
-    calendarApi.today();
-  };
-
   // 화면크기 상태 (반응형)
   useEffect(() => {
     const handleResize = () => {
-      setIsSmallScreen(window.innerWidth <= 1000); // 화면 크기 변경 시 상태 업데이트
+      setIsSmallScreen(window.innerWidth <= 1000); // 화면 크기 업데이트
     };
     window.addEventListener('resize', handleResize); // resize 화면크기 에 따라 작업 수행
     return () => window.removeEventListener('resize', handleResize);
@@ -103,10 +84,10 @@ const MyCalendarPage = () => {
       (event, index, self) =>
         self.findIndex((e) => e.date === event.date) === index
     )
-    : // 큰 화면에서는 모든 이벤트 표시
+    :
     events;
 
-  // 이벤트 필터링 로직
+  // 날짜별 확장상태 필터링
   const smallScreenFilteredEvents = events.filter((event) => {
     if (isSmallScreen) {
       return (
@@ -115,12 +96,12 @@ const MyCalendarPage = () => {
         events.indexOf(event) // 아니면 첫 번째 이벤트만 표시
       );
     }
-    return true; // 전체 화면에서는 모든 이벤트 표시
+    return true; // 큰 화면에서는 모든 이벤트 표시
   });
 
   // 로고 클릭 핸들러
   const handleLogoClick = (date) => {
-    // 이미 애니메이션이 진행 중이면 새로운 클릭을 막습니다.
+    // 이미 애니메이션이 진행 중이면 무시
     if (animatingDates[date]) return;
 
     // 기존 이벤트 흐림 처리
@@ -148,13 +129,14 @@ const MyCalendarPage = () => {
 
   // 모달 초기화
   const resetModal = () => {
-    setEndDate('');
-    setSavingName('');
-    setAmount('');
-    setLogoUrl('');
-    setLogoFileName('remainLogo.png');
-    setSelectedEventId(null);
-    setModalIsOpen(false);
+    setLogoUrl(''); // 로고
+    setSelectedBank(''); // 선택된 은행 
+    setProducts([]); // 은행별 적금명
+    setSavingName(''); // 적금명
+    setEndDate(''); // 만기일
+    setAmount(''); // 금액
+    setModalIsOpen(false); //모달 닫기
+    setSelectedEventId(null); // 선택된 이벤트
   };
 
   // 날짜 클릭 시 모달 열기
@@ -169,33 +151,44 @@ const MyCalendarPage = () => {
       openAlertModal('실패', '하루에 최대 3개의 상품만 추가할 수 있습니다!');
       return;
     }
-    setSelectedDate(info.dateStr);
-    resetModal();
-    setModalIsOpen(true);
+    resetModal(); // 상태 초기화
+    setSelectedDate(info.dateStr); // 클릭한 날짜 저장
+    setModalIsOpen(true); // 모달 열기
     setSelectedEventId(null); // 선택된 이벤트 ID 초기화
   };
 
-  //서버에서 이벤트 데이터를 가져오는 함수
+  // 은행 데이터 가져오기
+  useEffect(() => {
+    const fetchBanks = async () => {
+      const response = await axiosInstanceAPI.get(`${API_URL}/banks`);
+      const result = response.data.result; // ApiResponse에서 result 가져오기
+      setBanks(result || []); // 결과 배열 설정 (없으면 빈 배열)
+    };
+    fetchBanks();
+  }, []);
+
+  // 이벤트 목록 가져오기
   const fetchEvents = async () => {
-    try {
-      const response = await axiosInstanceAPI.get(`${PATH.SERVER}/api/calendar/events`);
-      const formattedEvents = response.data.result.map(event => ({
-        id: event.id,
-        title: `${event.installment_name} - ${event.amount.toLocaleString()}원`,
-        date: event.start_date,
-        extendedProps: {
-          bank_name: event.bank_name,
-          end_date: event.end_date,
-          installment_name: event.installment_name,
-          amount: event.amount,
-          logoUrl: bankLogos[event.bank_name] || 'remainLogo.png',
-        },
-      }));
-      setEvents(formattedEvents);
-    } catch (error) {
-      console.error('Failed to fetch events:', error.response || error.message);
-      openAlertModal('불러오기 실패', '이벤트를 불러오는 데 실패했습니다.');
-    }
+    const response = await axiosInstanceAPI.get(`${API_URL}/events`);
+
+    // 데이터를 result 필드에서 추출
+    const eventsFromServer = response.data.result;
+
+    // 형식 반환
+    const formattedEvents = eventsFromServer.map(event => ({
+      id: event.id,
+      title: `${event.installment_name} - ${event.amount.toLocaleString()}원`,
+      date: event.start_date, // 이벤트의 시작 날짜
+      extendedProps: {
+        bank_logo: event.bank_logo,
+        bank_name: event.bank_name,
+        installment_name: event.installment_name,
+        end_date: event.end_date,
+        amount: event.amount,
+        fixedStartDate: event.fixedStartDate, // 최초 시작일
+      },
+    }));
+    setEvents(formattedEvents);
   };
 
   // 이벤트 저장
@@ -203,7 +196,7 @@ const MyCalendarPage = () => {
     // 필수 입력 사항 확인
     if (!savingName || !amount || !selectedDate || !endDate || !logoUrl) {
       openAlertModal('작성 불가', '모든 정보를 입력해주세요!');
-      return; // 중단
+      return;
     }
 
     // 하루 최대 3개 이벤트 제한 확인
@@ -214,92 +207,185 @@ const MyCalendarPage = () => {
     }
 
     const numericAmount = parseInt(amount.replace(/,/g, ''), 10); // 쉼표 제거 후 숫자로 변환
-    const formattedAmount = numericAmount.toLocaleString(); // 쉼표 추가
+    const finalDate = new Date(endDate); // 종료 날짜 Date객체로
     const newEventData = []; // 백엔드로 전송할 데이터 리스트
-    const startDate = new Date(selectedDate);
-    const finalDate = new Date(endDate);
+    let currentDate = new Date(selectedDate); // 반복일정 시작날짜
+
+    // 시작 날짜의 "일" 값 저장
+    const fixedDay = currentDate.getDate();
+
+    // Date객체를 문자열로 반환 (YYYY-MM-DD)
+    function formatDateToLocalString(date) {
+      const year = date.getFullYear(); // 연도
+      const month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
+      const day = String(date.getDate()).padStart(2, '0'); // 일 한자리 숫자 0 추가
+      return `${year}-${month}-${day}`;
+    }
 
     // 반복 일정 데이터 생성
-    while (startDate.getTime() <= finalDate.getTime()) {
-      const eventDate = startDate.toISOString().split('T')[0]; // 날짜 포맷 (yyyy-mm-dd)
-
-      // 백엔드로 보낼 데이터 생성
+    while (currentDate <= finalDate) {
       newEventData.push({
-        installment_name: savingName,
         bank_name: logoUrl,
+        installment_name: savingName,
         amount: numericAmount,
-        start_date: eventDate,
-        end_date: eventDate, // 반복 이벤트는 하루 단위로 저장
+        start_date: formatDateToLocalString(currentDate),
+        end_date: formatDateToLocalString(finalDate),
       });
 
-      // 매월 같은 날짜 반복
-      const currentDay = startDate.getDate();
-      startDate.setMonth(startDate.getMonth() + 1);
-      if (startDate.getDate() !== currentDay) {
-        startDate.setDate(0); // 말일로 설정
+      // 다음 달로 이동
+      const nextMonth = currentDate.getMonth() + 1;
+      const nextYear = currentDate.getFullYear();
+
+      // 다음 달의 첫 날로 초기화
+      currentDate = new Date(nextYear, nextMonth, 1);
+
+      // 다음 달 말일 계산
+      const lastDayOfNextMonth = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth() + 1,
+        0
+      ).getDate();
+
+      // 말일 처리
+      if (fixedDay > lastDayOfNextMonth) {
+        // 고정된 날짜가 말일보다 큰 경우, 말일로 설정
+        currentDate.setDate(lastDayOfNextMonth);
+      } else {
+        // 고정된 날짜로 설정
+        currentDate.setDate(fixedDay);
       }
     }
+    // 모든 이벤트 백엔드로
+    await axiosInstanceAPI.post(`${PATH.SERVER}/api/calendar/save`, newEventData);
 
-    try {
-      // 전체 일정 데이터를 한 번에 백엔드로 전송
-      await axiosInstanceAPI.post(`${PATH.SERVER}/api/calendar/save`, newEventData); 
-
-      // 이벤트 목록을 다시 불러와 최신 상태로 반영
-      await fetchEvents();
-    } catch (error) {
-      openAlertModal('저장 실패');
-      return; // 중단
-    }
+    // 이벤트 목록을 다시 불러와 최신 상태로 반영
+    await fetchEvents();
+    resetModal();
 
     // 입력 필드 및 모달 초기화
-    setModalIsOpen(false); // 창닫기
-    setSavingName(''); // 적금명 초기화
-    setAmount(''); // 금액 초기화
-    setLogoUrl(''); // 은행명 초기화
-    setLogoFileName('remainLogo.png'); // 기본 로고 이미지 초기화
-    setSelectedDate(''); // 선택된 시작 날짜 초기화
-    setEndDate(''); // 선택된 종료 날짜 초기화
+    setModalIsOpen(false);
+    setSavingName('');
+    setAmount('');
+    setLogoUrl('');
+    setSelectedDate('');
+    setEndDate('');
   };
+
+  // 은행 선택 시 적금명 가져오기
+  const handleBankChange = async (bankName) => {
+    setSelectedBank(bankName); // 은행명 저장
+    setLogoUrl(''); // 기존 로고 초기화
+
+    // 적금명 목록 가져오기
+    const response = await axiosInstanceAPI.get(`${API_URL}/banks/${bankName}/products`);
+    console.log(response.data);
+    setProducts(response.data.result || []);
+
+    // 로고 업데이트
+    const selectedBank = banks.find((bank) => bank.bankName === bankName);
+    if (selectedBank) {
+      setLogoUrl(selectedBank.bankLogo); // 은행 로고 업데이트
+    } else {
+      setLogoUrl('remainLogo.png'); // 기본 로고
+    }
+  }
 
   // 수정 기능
   const updateEvent = async () => {
-    const payload = {
-      installment_name: savingName,
-      bank_name: logoUrl,
-      amount: parseInt(amount.replace(/,/g, ''), 10),
-      end_date: endDate, 
-    };
+    const numericAmount = parseInt(amount.replace(/,/g, ''), 10);
+    const finalDate = new Date(endDate);
+    const updatedEvents = [];
+    let currentDate = new Date(selectedDate);
 
-    try {
-      await axiosInstanceAPI.put(`${PATH.SERVER}/api/calendar/update/group/${selectedEventId}`, payload); // 그룹 수정 호출
-      await fetchEvents();
-      resetModal();
-    } catch (error) {
-      openAlertModal('수정 실패', '이벤트 수정 중 문제가 발생했습니다.');
+    const fixedDay = currentDate.getDate();
+
+    function formatDateToLocalString(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
     }
-  };
+
+    while (currentDate <= finalDate) {
+      updatedEvents.push({
+        bank_name: logoUrl,
+        installment_name: savingName,
+        amount: numericAmount,
+        start_date: formatDateToLocalString(currentDate),
+        end_date: formatDateToLocalString(finalDate),
+      });
+
+      const nextMonth = currentDate.getMonth() + 1;
+      const nextYear = currentDate.getFullYear();
+
+      currentDate = new Date(nextYear, nextMonth, 1);
+
+      const lastDayOfNextMonth = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth() + 1,
+        0
+      ).getDate();
+
+      if (fixedDay > lastDayOfNextMonth) {
+        currentDate.setDate(lastDayOfNextMonth);
+      } else {
+        currentDate.setDate(fixedDay);
+      }
+    }
+    // 기존 그룹 데이터 삭제
+    await axiosInstanceAPI.delete(`${PATH.SERVER}/api/calendar/delete/group/${selectedEventId}`);
+    // 수정된 이벤트 서버에 저장
+    await axiosInstanceAPI.post(`${PATH.SERVER}/api/calendar/save`, updatedEvents);
+    // 최신 이벤트 데이터 가져오기
+    await fetchEvents();
+    resetModal();
+  }
 
   // 삭제 기능
   const deleteEvent = async () => {
-    try {
-      await axiosInstanceAPI.delete(`${PATH.SERVER}/api/calendar/delete/group/${selectedEventId}`); // 그룹 삭제 호출
-      await fetchEvents(); // 업데이트된 이벤트 목록 가져오기
-      resetModal();
-    } catch (error) {
-      openAlertModal('삭제 실패', '이벤트 삭제 중 문제가 발생했습니다.');
-    }
-  };
+    await axiosInstanceAPI.delete(`${PATH.SERVER}/api/calendar/delete/group/${selectedEventId}`); // 그룹 삭제 호출
+    await fetchEvents(); // 업데이트된 이벤트 목록 가져오기
+    resetModal();
+  }
 
-  const handleEventClick = (info) => {
+  const handleEventClick = async (info) => {
     const { extendedProps } = info.event;
 
+    const startDateToSet = extendedProps.fixedStartDate || info.event.startStr; // 기본값 설정
+
     setSelectedEventId(info.event.id); // 이벤트 ID 설정
-    setSelectedDate(info.event.startStr);
-    setEndDate(extendedProps.end_date || ''); // 만기일 가져오기
-    setSavingName(extendedProps.installment_name || ''); // 적금명 가져오기
-    setAmount(extendedProps.amount ? extendedProps.amount.toString() : ''); // 금액 가져오기
-    setLogoUrl(extendedProps.bank_name || ''); // 은행명 가져오기
-    setLogoFileName(extendedProps.logoUrl || 'remainLogo.png'); // 로고 파일명 설정
+    setSelectedDate(startDateToSet); // 고정된 시작일 설정
+    setEndDate(extendedProps.end_date || ''); // 만기일 설정
+    setAmount(extendedProps.amount ? extendedProps.amount.toString() : ''); // 금액 설정
+
+    // 로고로 선택이벤트 확인
+    const bankName = banks.find((bank) => bank.bankLogo === extendedProps.bank_name)?.bankName || '';
+    setSelectedBank(bankName);
+
+    // 은행 데이터에서 은행 로고 찾기
+    const selectedBankData = banks.find((bank) => bank.bankName === bankName);
+    if (selectedBankData) {
+      setLogoUrl(selectedBankData.bankLogo); // 은행 로고 설정
+    } else {
+      setLogoUrl('remainLogo.png');
+    }
+
+    // 적금명 리스트 가져오기
+    if (bankName) {
+      const response = await axiosInstanceAPI.get(`${API_URL}/banks/${bankName}/products`);
+      const productList = response.data.result || []; // 적금명 리스트 가져오기
+      setProducts(productList); // 상태에 적금명 리스트 업데이트
+
+      // 적금명이 응답 리스트에 존재하는 경우 상태 업데이트
+      const matchedProduct = productList.find((product) => product === extendedProps.installment_name);
+      if (matchedProduct) {
+        setSavingName(matchedProduct); // 적금명 상태 업데이트
+      } else {
+        setSavingName(''); // 적금명을 찾지 못하면 기본값
+      }
+      setProducts([]);
+      setSavingName('');
+    }
     setModalIsOpen(true); // 모달 열기
   };
 
@@ -417,7 +503,7 @@ const MyCalendarPage = () => {
               }
             }}
             eventContent={(eventInfo) => {
-              const logoFileName = eventInfo.event.extendedProps.logoUrl; // 파일명만 가져옴
+              const logoFileName = eventInfo.event.extendedProps.bank_name; // 파일명만 가져옴
               const logoUrl = `${PATH.STORAGE_BANK}/${logoFileName}`; // 경로 결합
               const date = eventInfo.event.startStr; // 이벤트 시작 날짜
 
@@ -513,49 +599,49 @@ const MyCalendarPage = () => {
       {/* 모달 */}
       <Modal
         isOpen={modalIsOpen}
-        onRequestClose={() => {
-          setModalIsOpen(false);
-          resetModal();
-        }}
-        className={styles.modalContent} // 모달 스타일
-        overlayClassName={styles.modalOverlay} // 배경
+        onRequestClose={resetModal}
+        className={styles.modalContent}
+        overlayClassName={styles.modalOverlay}
       >
         {/* 로고 이미지 출력 */}
-        {logoFileName && (
+        {logoUrl && (
           <img
-            src={`${PATH.STORAGE_BANK}/${logoFileName}`}
+            src={`${PATH.STORAGE_BANK}/${logoUrl}`} // 로고 URL 설정
             alt="Bank Logo"
             className={styles.logoImage}
+            onError={(e) => {
+              e.target.src = `${PATH.STORAGE_BANK}/remainLogo.png`; // 기본 로고로 대체
+            }}
           />
         )}
         <label className={styles.modalLabel}>은행</label>
-        <input
-          type="text"
-          value={logoUrl}
-          onChange={(e) => {
-            const inputValue = e.target.value.trim(); // 입력값에서 공백 제거
-            setLogoUrl(inputValue); // 사용자가 입력한 은행명을 저장
-
-            // 은행명과 일치하는 항목을 찾는다
-            const matchedBank = Object.entries(bankLogos).find(([bankName, logo]) =>
-              bankName.includes(inputValue) // 일부분 일치 검사
-            );
-
-            // 매칭이 없으면 기본 로고로
-            const logoFileName = matchedBank ? matchedBank[1] : 'remainLogo.png';
-            setLogoFileName(logoFileName); // 파일명만 저장
-          }}
-          className={styles.modalInput}
-        />
-
+        <select
+          value={selectedBank}
+          onChange={(e) => handleBankChange(e.target.value)}
+          className={styles.modalSelect}
+        >
+        <option value="">은행 선택</option>
+        {Array.isArray(banks) &&
+          banks.map((bank) => (
+            <option key={bank.bankName} value={bank.bankName}>
+              {bank.bankName}
+            </option>
+          ))}
+        </select>
         <label className={styles.modalLabel}>적금명</label>
-        <input
-          type="text"
+        <select
           value={savingName}
           onChange={(e) => setSavingName(e.target.value)}
-          className={styles.modalInput}
-        />
-
+          className={styles.modalSelect}
+        >
+        <option value="">적금명 선택</option>
+        {Array.isArray(products) &&
+          products.map((product, index) => (
+            <option key={index} value={product}>
+              {product}
+            </option>
+          ))}
+        </select>
         <label className={styles.modalLabel}>시작 날짜</label>
         <input
           type="date"
@@ -569,6 +655,14 @@ const MyCalendarPage = () => {
           value={endDate}
           min={selectedDate || undefined} // 시작일 이후로만 선택 가능
           onChange={(e) => setEndDate(e.target.value)}
+          onInput={(e) => {
+            const value = e.target.value;
+            const parts = value.split('-'); // 날짜를 연도-월-일로 분리
+            if (parts[0]?.length > 4) {
+              parts[0] = parts[0].slice(0, 4); // 연도 부분을 4자리로 제한
+              e.target.value = parts.join('-');
+            }
+          }}
           className={styles.modalInput}
         />
         <label className={styles.modalLabel}>금액</label>
@@ -629,4 +723,3 @@ const MyCalendarPage = () => {
 };
 
 export default MyCalendarPage;
-

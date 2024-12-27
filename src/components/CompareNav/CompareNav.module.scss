@@ -1,0 +1,158 @@
+.compareNavDiv{
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    bottom: 10px; left: 0;
+    width: 100%;
+    height: 100px;
+    
+    .comparePrd{
+        width: 60%; height: 50px;
+        opacity: 0;
+        max-height: 0;
+        transition: max-height 0.4s ease-in-out, opacity 0.4s ease-in-out;
+
+        .productList {
+            width: 100%;
+            border: 2px solid var(--divider-border); border-radius: 30px;
+            padding: 10px 20px;
+            background-color: var(--white);
+            display: none;
+
+            p{
+                font-size: 12px;
+                color: var(--font2);
+            }
+        }
+        
+        .productList.open {
+            display: flex;
+            align-items: center;
+            flex-direction: row;
+            justify-content: center;
+            gap: 30px;
+
+            .productItem{
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-size: 12px;
+
+                img{
+                    width: 25px; height: 25px;
+                    margin-right: 5px;
+                }
+
+                span{
+                    margin-left: 10px;
+                    cursor: pointer;
+
+                    &:hover{
+                        color: var(--font3);
+                    }
+                }
+            }
+
+            .toggletitle{
+                color: var(--main2);
+                font-weight: 700;
+                font-size: 12px;
+                cursor: pointer;
+    
+                &:hover{
+                    color: var(--main1);
+                }
+            }
+    
+            .toggleBtn{
+                display: flex;
+                justify-content: center;
+                cursor: pointer;
+            }
+        }
+
+        &.navOpen {
+            opacity: 1;
+            max-height: 500px;
+        }
+
+        &.navClose {
+            opacity: 0;
+            max-height: 0;
+        }
+
+    }
+
+    .closeNav{
+        margin-left: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--white);
+        padding: 5px 10px; border-radius: 20px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: 0.4s;
+
+        .rightIcon{
+            margin-left: 5px;
+        }
+
+        .leftIcon{
+            margin-right: 5px;
+        }
+
+        &:hover{
+            color: var(--font3);
+        }
+    }
+}
+
+
+/* 반응형 1200px */
+@media (max-width: 1200px) {
+
+    .comparePrd{
+        width: 70% !important;
+        
+        .productList.open {
+            gap: 20px !important;
+            
+            .toggletitle{
+                font-size: 12px;
+            }
+            
+            .productItem{
+                font-size: 10px;
+            }
+        }
+    }
+}
+
+/* 반응형 768px */
+@media (max-width: 768px) {
+    .compareNavDiv{
+        padding: 0 50px;
+
+        .comparePrd{
+            width: 90% !important;
+        }
+
+        .closeNav{
+            span{
+                display: none;
+            }
+        }
+    }
+
+
+}
+
+
+/* 반응형 768px */
+@media (max-width: 480px) {
+    .compareNavDiv{
+        display: none;
+    }
+}

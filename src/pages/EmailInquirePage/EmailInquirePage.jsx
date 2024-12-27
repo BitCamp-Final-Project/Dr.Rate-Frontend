@@ -1,40 +1,88 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './EmailInquirePage.module.scss';
+import { PATH } from 'src/utils/path';
+import { useNavigate } from 'react-router-dom';
+import axiosInstanceAPI from 'src/apis/axiosInstanceAPI';
+
+import { useAtom } from 'jotai';
+import { userData } from '../../atoms/userData';
 
 const EmailInquirePage = () => {
-    const [formData, setFormData] = useState({
-      inquiryType: "",
-      name: "",
-      email: "",
-      subject: "",
-      message: "",
-      file: null,
-      agreeToPrivacy: false,
-    });
-  
-    const handleChange = (e) => {
-      const { name, value, type, checked, files } = e.target;
-      if (type === "checkbox") {
-        setFormData({ ...formData, [name]: checked });
-      } else if (type === "file") {
-        setFormData({ ...formData, file: files[0] });
-      } else {
-        setFormData({ ...formData, [name]: value });
+  const navigate = useNavigate();
+  const [myData, setMyData] = useAtom(userData); // Jotai Atom 사용
+
+  const [formData, setFormData] = useState({
+    inquireCtg: "", //inquiryType
+    inquireUser: "", //name
+    inquireEmail: "", // email
+    inquireTitle: "", // subject
+    inquireContent: "", // message
+    fileUuid: null, // fileUuid(Back)
+    agreeToPrivacy: false,
+  });
+
+  //데이터 
+  useEffect(() => {
+    const userDTO = async () => {
+      try {
+        if(myData) {
+          setFormData((prev) => ({
+            ...prev,
+            inquireUser: myData.username,
+            inquireEmail: myData.email,
+          }));
+        }
+      } catch (error) {
+        console.error(error);
       }
-    };
-  
-    const handleSubmit = (e) => {
-      e.preventDefault();
-      if (!formData.agreeToPrivacy) {
-        alert("개인정보 수집 및 이용동의에 체크해 주세요.");
-        return;
+    }
+    userDTO();
+  }, [myData, navigate]);
+
+  const handleChange = (e) => {
+    const { name, value, type, checked, files } = e.target;
+    if (type === "checkbox") {
+      setFormData({ ...formData, [name]: checked });
+    } else if (type === "file") {
+      setFormData({ ...formData, fileUuid: files[0] });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
+  };
+
+  const handleSubmitInquire = async () => {
+    try {
+      const formDataToSend = new FormData();
+
+      // 보내는 폼 데이터에 추가
+      formDataToSend.append("inquireCtg", formData.inquireCtg);
+      formDataToSend.append("inquireUser", formData.inquireUser);
+      formDataToSend.append("inquireEmail", formData.inquireEmail);
+      formDataToSend.append("inquireTitle", formData.inquireTitle);
+      formDataToSend.append("inquireContent", formData.inquireContent);
+      formDataToSend.append("agreeToPrivacy", formData.agreeToPrivacy);
+
+      // 폼데이터에 파일추가
+      if (formData.fileUuid) {
+        formDataToSend.append("fileUuid", formData.fileUuid); // 파일 추가
       }
-      alert("폼 제출 완료!");
-      console.log("Submitted data:", formData);
-    };
+
+      const response = await axiosInstanceAPI.post(`${PATH.SERVER}/api/emailinquire/save`, 
+        formDataToSend,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data", // 중요!
+          },
+        }
+      );
+      console.log("이메일 전송 = " + response.data);
+    } catch(error) {
+      console.log(error);
+    }
+  }
 
   return (
-    <form className={styles.formContainer} onSubmit={handleSubmit}>
+    <form className={styles.formContainer}>
       <h1 className={styles.title}>이메일 문의하기</h1>
       <p className={styles.subTitle}>
         빠른 문의 처리는 <a href="/userInquire" className={styles.link}>관리자 1:1 문의</a>를 이용해 주세요.
@@ -44,8 +92,8 @@ const EmailInquirePage = () => {
       <div className={styles.formGroup}>
         <select
           id="inquiryType"
-          name="inquiryType"
-          value={formData.inquiryType}
+          name="inquireCtg"
+          value={formData.inquireCtg}
           onChange={handleChange}
           className={styles.selectInput}
         >
@@ -66,11 +114,12 @@ const EmailInquirePage = () => {
         <input
           type="text"
           id="name"
-          name="name"
-          value={formData.name}
+          name="inquireUser"
+          value={formData.inquireUser || ""}
           onChange={handleChange}
           className={styles.textInput}
           placeholder="이름"
+          readOnly
         />
       </div>
 
@@ -79,11 +128,12 @@ const EmailInquirePage = () => {
         <input
           type="email"
           id="email"
-          name="email"
-          value={formData.email}
+          name="inquireEmail"
+          value={formData.inquireEmail}
           onChange={handleChange}
           className={styles.textInput}
           placeholder="이메일"
+          readOnly
         />
       </div>
 
@@ -92,8 +142,8 @@ const EmailInquirePage = () => {
         <input
           type="text"
           id="subject"
-          name="subject"
-          value={formData.subject}
+          name="inquireTitle"
+          value={formData.inquireTitle}
           onChange={handleChange}
           className={styles.textInput}
           placeholder="제목"
@@ -104,8 +154,8 @@ const EmailInquirePage = () => {
       <div className={styles.formGroup}>
         <textarea
           id="message"
-          name="message"
-          value={formData.message}
+          name="inquireContent"
+          value={formData.inquireContent}
           onChange={handleChange}
           className={styles.textArea}
           placeholder="문의 내용"
@@ -113,7 +163,7 @@ const EmailInquirePage = () => {
         />
         <br></br>
         <small className={styles.hint}>
-          {formData.message.length}자 / 최대 500자
+          {formData.inquireContent.length}자 / 최대 500자
         </small>
       </div>
 
@@ -122,7 +172,7 @@ const EmailInquirePage = () => {
             <input
             type="text"
             readOnly
-            value={formData.file ? formData.file.name : ""}
+            value={formData.fileUuid ? formData.fileUuid.name : ""}
             placeholder=""
             className={styles.fileInputText}
             />
@@ -132,7 +182,7 @@ const EmailInquirePage = () => {
             <input
             type="file"
             id="file"
-            name="file"
+            name="fileUuid"
             onChange={handleChange}
             className={styles.fileInput}
             />
@@ -165,11 +215,12 @@ const EmailInquirePage = () => {
 
       {/* Submit Button */}
       <button
-        type="submit"
+        type="button"
         className={`${styles.submitButton} ${
           !formData.agreeToPrivacy ? styles.disabled : ""
         }`}
         disabled={!formData.agreeToPrivacy}
+        onClick={handleSubmitInquire}
       >
         제출하기
       </button>

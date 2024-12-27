@@ -5,8 +5,7 @@ import { atom } from 'jotai';
 // Authorization 키가 로컬 스토리지에 있는지 확인하여 초기값 설정
 const isLoggedInAtom = atom(
   !!localStorage.getItem('Authorization') &&
-  localStorage.getItem('Authorization') !== 'undefined'  
-//   && localStorage.getItem('Authorization') !== 'dummy'
+  localStorage.getItem('Authorization') !== 'undefined'
 );
 
 export { isLoggedInAtom };

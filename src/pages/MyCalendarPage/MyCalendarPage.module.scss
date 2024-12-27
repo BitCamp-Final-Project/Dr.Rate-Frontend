@@ -119,6 +119,7 @@
   border: 1px solid var(--divider-border);
   border-radius: 4px;
   font-size: 14px;
+  cursor: pointer; 
 }
 
 .modalButton {
@@ -146,9 +147,9 @@
   .deleteButton {
     flex: 1; /* 두 버튼의 너비를 동일하게 설정 */
     padding: 10px;
-    background-color: var(--main2); /* 기본 버튼 색상 */
+    background-color: var(--side-nav); /* 기본 버튼 색상 */
     color: var(--white); /* 글자 색상 */
-    border: none;
+    border: 1px solid #0056b3;
     border-radius: 4px;
     cursor: pointer;
     font-size: 16px;
@@ -156,14 +157,17 @@
     transition: background-color 0.3s ease;
 
     &:hover {
-      background-color: #006bbd; /* 호버 색상 */
+      background-color: #003f87; /* 호버 색상 */
+      border: 1px solid #003f87;
     }
   }
 
   .deleteButton {
-    background-color: var(--red1); /* 삭제 버튼 - 빨간색 */
+    background-color: var(--main2); 
+    border: 1px solid var(--main2);
     &:hover {
-      background-color: var(--red2); /* 삭제 버튼 호버 색상 */
+      background-color: var(--main1); 
+      border: 1px solid var(--main1);
     }
   }
 }
