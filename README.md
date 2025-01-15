@@ -25,7 +25,7 @@
 - **프로그래밍 언어**: HTML, SCSS, JavaScript
 - **IDE**: IntelliJ, STS4 (jdk-17)
 - **DBMS**: MySQL, Redis, MongoDB, Apache Kafka
-- **버전 관리**: g]Git, GitHub
+- **버전 관리**: Git, GitHub
 - **Naver Cloud DB**: dr-rate-db
 - **Naver Cloud Object Storage**: dr-rate
 
